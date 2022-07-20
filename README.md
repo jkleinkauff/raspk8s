@@ -4,6 +4,7 @@ This repo intends to help me when I need it to setup my raspberry cluster again.
 1. [New Raspberry Setup](#newrasp)
     1. [Upgrade](#upgrading)
     2. [Static IP](#staticip)
+    2. [SSD](#ssd)
 3. [Tools](#tools)
     1. [k3s](#k3s)
         1. [Install](#install)
@@ -31,14 +32,28 @@ sudo reboot
 ```
 
 ### Set a static IP <a name="staticip"></a>
-1 - vim /etc/dhcpcd.conf
-2 - 
+- vim /etc/dhcpcd.conf
+
+```
 interface wlan0
 static ip_address=192.168.15.180/24
 static routers=192.168.15.1
 static domain_name_servers=8.8.8.8
+```
 
 where interface, routers will depend of wifi/eth and your router gateway.
+
+### Raspberry from an SSD <a name="ssd"></a>
+
+With [rpi-clone](https://github.com/billw2/rpi-clone) it's possible to copy your SD card to a newly formatted SSD drive. The approach that worked for me is to first create the SD card with the Raspberry Imager, make sure it is working and you can SSH, then run rpi-clone.
+
+- Create an SD card with your image
+- Make sure you can boot with it and SSH
+- Use rpi-cloner to copy SD card content into the SSD drive
+- Run raspi-config and change boot order (A6)
+- Shutdown your rpi
+- Unplug the SD card and left only the SSD.
+
 
 ## Tools <a name="tools"></a>
 
