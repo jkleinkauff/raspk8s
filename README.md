@@ -13,10 +13,9 @@ This repo intends to help me when I need it to setup my raspberry cluster again.
 
 ## Setup a new raspberry <a name="newrasp"></a>
 
--  use the official Raspberry Imager
+-  use the official [Raspberry Imager](https://www.raspberrypi.com/software/)
 - image: select OS 64 Lite
-- config: for my case, I prefer to enable just the ssh through GUI and
-- enable Wifi with wpa_supplicant.conf
+- config: for my case, I prefer to enable just the ssh through GUI and enable Wifi with wpa_supplicant.conf
 
 
 Use a good quality usb-c cable. Sometimes the rpi will fail to read the sd card, in my case, it was a faulty usb cable. Seriosly.
