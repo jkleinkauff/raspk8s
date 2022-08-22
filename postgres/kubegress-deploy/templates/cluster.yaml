@@ -1,0 +1,40 @@
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  image: {{ .Values.customPGImage }}
+  database:
+    size: {{ .Values.size }}
+      #    storageClassName: {{ .Values.storageClassName }}
+      #    volumeMount: /var/lib/postgresql/data
+  customConfig: {{ .Values.configMapName }}
+  backup:
+    schedule: {{ .Values.backupSchedule | quote }}
+    pvcName: bkp-pvc-{{ .Release.Name }}
+    volumeMount: /var/lib/backup
+  env:
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Release.Name }}-secrets
+          key: superUserPassword
+    - name: POSTGRES_REPLICATION_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Release.Name }}-secrets
+          key: replicationUserPassword
+
+
+    - name: POSTGRES_DB
+      value: postgres
+    - name: POSTGRES_USER
+      value: postgres
+    - name: DB_NAME
+      value: {{ .Values.db_name }}
+    - name: DB_USER
+      value: {{ .Values.db_user }}
+    - name: DB_PASSWORD
+      value: {{ .Values.db_password }}

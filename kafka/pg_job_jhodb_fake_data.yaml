@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: job-pg-datagen
+spec:
+  schedule: "0 */2 * * *"
+  #schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: pg-datagen
+            image: kleinkauff/jho-pg-datagen
+            imagePullPolicy: IfNotPresent
+            command:
+            - ./generator.py
+            args:
+            - --dsn 
+            - 'postgresql://user_jhodb:jhodb@jhodb-postgres-chart.jhodb/jhodb'
+            - --batch-size 
+            - '20'
+            - --rows
+            - '3'
+            - --target
+            - 'examples/simple/ecommerce.py'
+          restartPolicy: OnFailure
+

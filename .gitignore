@@ -1,0 +1,7 @@
+.DS_Store
+kafka/ca.crt
+kafka/kafka_connect_secret_aws.yaml
+postgres/tmp_service_replica_apply.yaml
+postgres/tmp_service_master_apply.yaml
+postgres/kubegress-deploy/ext_service/tmp_service_master_apply.yaml
+postgres/kubegress-deploy/ext_service/tmp_service_replica_apply.yaml

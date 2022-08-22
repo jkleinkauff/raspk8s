@@ -1,0 +1,10 @@
+size: 2Gi
+configMapName: jhodb-config
+customPGImage: "postgres:14.4-alpine"
+replicas: 2
+wal_level: logical
+logging_collector: true
+log_statement: 'none'
+db_name: jhodb
+db_user: user_jhodb
+db_password: jhodb

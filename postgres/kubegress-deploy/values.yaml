@@ -1,0 +1,17 @@
+size: 2Gi
+  #storageClassName:
+configMapName: mypostgres-conf
+  #backupPVCName: pg-backup-pvc
+  #secretName: mypostgres-secret
+backupSchedule: "0 */6 * * *"
+customPGImage: "postgres:14.4-alpine"
+replicas: 3
+wal_level: replica
+logging_collector: true
+log_statement: 'ddl'
+db_name: custom_database
+db_user: custom_user
+db_password: minha_senha
+  #DBextensions:
+  #  - uuid-ossp
+  #  - pg_trgm

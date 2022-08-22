@@ -3,7 +3,9 @@ This repo intends to help me when I need it to setup my raspberry cluster again.
 
 1. [New Raspberry Setup](#newrasp)
     1. [Upgrade](#upgrading)
-    2. [Static IP](#staticip)
+    2. [Static IP](#staticip)   
+        3. [Raspbian](#raspbian)    
+        3. [Debian](#debian)
     2. [SSD](#ssd)
 3. [Tools](#tools)
     1. [k3s](#k3s)
@@ -32,6 +34,9 @@ sudo reboot
 ```
 
 ### Set a static IP <a name="staticip"></a>
+
+
+#### Raspbian <a name="raspbian"></a>
 - vim /etc/dhcpcd.conf
 
 ```
@@ -42,6 +47,13 @@ static domain_name_servers=8.8.8.8
 ```
 
 where interface, routers will depend of wifi/eth and your router gateway.
+
+#### Debian 11+ <a name="debian"></a>
+
+```
+nmcli con add con-name "anyname" type wifi ifname wlan0 ssid "<ssid>" -- wifi-sec.key-mgmt wpa-psk wifi-sec.psk "<password>" ipv4.method manual ipv4.address 192.168.15.190/24 ipv4.dns 8.8.8.8,8.8.8.4 ipv4.gateway 192.168.15.1
+```
+
 
 ### Raspberry from an SSD <a name="ssd"></a>
 
