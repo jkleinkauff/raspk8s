@@ -1,0 +1,10 @@
+clusterName: my-cluster
+bootstrapHost: bootstrap.192.168.15.160.nip.io
+brokersHost: broker-0.192.168.15.160.nip.io
+deployKafkaConnect: true
+connectName: my-connect
+
+kafkaConnectAwsAccessKey: awsAccessKey
+kafkaConnectAwsSecretAccessKey: awsSecretAccessKey
+
+dockerRedcredConfig: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJrbGVpbmthdWZmIiwicGFzc3dvcmQiOiJmR3olUWV5M0tYeVYiLCJlbWFpbCI6ImtsZWlua2F1ZmZAZ21haWwuY29tIiwiYXV0aCI6ImEyeGxhVzVyWVhWbVpqcG1SM29sVVdWNU0wdFllVlk9In19fQ==

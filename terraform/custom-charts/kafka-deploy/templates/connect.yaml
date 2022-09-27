@@ -1,0 +1,87 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: {{ .Values.connectName }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    strimzi.io/use-connector-resources: "true"
+spec:
+  version: 3.2.0
+  replicas: 1
+  bootstrapServers: {{ .Values.clusterName }}-kafka-bootstrap:9093
+  tls:
+    trustedCertificates:
+      - secretName: my-cluster-cluster-ca-cert
+        certificate: ca.crt
+  authentication:
+    type: scram-sha-512
+    username: my-connect
+    passwordSecret:
+      secretName: my-connect
+      password: password
+  externalConfiguration:
+    env:
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: aws-creds
+            key: awsAccessKey
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: aws-creds
+            key: awsSecretAccessKey
+  config:
+    group.id: connect-cluster
+    replication.factor: 1
+    default.replication.factor: 1
+    offsets.topic.replication.factor: 1
+    transaction.state.log.replication.factor: 1
+    offset-syncs.topic.replication.factor: 1
+    config.storage.replication.factor: 1
+    offset.storage.replication.factor: 1
+    status.storage.replication.factor: 1
+    offset.storage.topic: connect-cluster-offsets
+    config.storage.topic: connect-cluster-configs
+    status.storage.topic: connect-cluster-status
+    key.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    key.converter.schemas.enable: false
+    value.converter.schemas.enable: false
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 1.2Gi
+      cpu: 1000m
+  jvmOptions:
+    -Xms: 300m
+    -Xmx: 300m
+  build:
+    output:
+      type: docker
+      image: kleinkauff/my-connect-cluster:latest
+      pushSecret: redcred
+    plugins:
+      - name: debezium-postgres-connector
+        artifacts:
+          - type: zip
+            url: https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/1.4.2.Final/debezium-connector-postgres-1.4.2.Final-plugin.zip
+            sha512sum: ef1620547e6ddf5be010271849b6a87a19f6e6beee93b379c80883815b8f37ec5137095b2c99975d7704cbf957e6a33d76c61109582cad57c7cbbfae43adc86c
+      - name: confluent-s3-sink
+        artifacts:
+          - type: zip
+            url: https://d1i4a15mxbxib1.cloudfront.net/api/plugins/confluentinc/kafka-connect-s3/versions/10.0.11/confluentinc-kafka-connect-s3-10.0.11.zip
+      #- name: filepulse-connector
+      #artifacts:
+      #- type: zip
+      #url: https://github.com/streamthoughts/kafka-connect-file-pulse/releases/download/v2.6.0/streamthoughts-kafka-connect-file-pulse-2.6.0.zip
+      #- name: kafka-connect-spooldir
+      #artifacts:
+      #- type: zip
+      #url: https://d1i4a15mxbxib1.cloudfront.net/api/plugins/jcustenborder/kafka-connect-spooldir/versions/2.0.64/jcustenborder-kafka-connect-spooldir-2.0.64.zip
+  template:
+    pod:
+      securityContext:
+        runAsUser: 0

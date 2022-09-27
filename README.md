@@ -1,6 +1,5 @@
 This repo intends to help me when I need it to setup my raspberry cluster again. The process is not hard at all, but some tools and apps have some details that I will certainly forget.
 
-
 1. [New Raspberry Setup](#newrasp)
     1. [Upgrade](#upgrading)
     2. [Static IP](#staticip)   
@@ -96,5 +95,10 @@ curl -sfL https://get.k3s.io | K3S_URL=https://masterip:6443 K3S_TOKEN=mastertok
 ```
 
 
-## metalb <a name="metalb"></a>
 
+Future me, now you can head to /terraform and apply the other apps.
+
+- metallb
+- postgres
+- kafka
+- airflow
