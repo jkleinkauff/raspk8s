@@ -1,0 +1,12 @@
+size: 2Gi
+configMapName: pg-airbyte-config
+customPGImage: "postgres:14.4-alpine"
+enableBackup: false
+pvc_bkp_name: pg-airbyte-pvc-bkp2
+replicas: 2
+wal_level: logical
+logging_collector: false
+log_statement: 'none'
+db_name: airbyte
+db_user: user_airbyte
+db_password: airbyte

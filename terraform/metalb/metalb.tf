@@ -9,7 +9,7 @@ resource "helm_release" "metallb" {
   namespace  = kubernetes_namespace.metallb.metadata.0.name
   repository = "https://metallb.github.io/metallb"
   chart      = "metallb"
-  version    = "0.13.4"
+  version    = "0.13.5"
 }
 
 resource "kubectl_manifest" "metallb-pool" {

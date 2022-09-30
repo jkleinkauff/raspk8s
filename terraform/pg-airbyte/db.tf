@@ -12,7 +12,7 @@ resource "helm_release" "postgres" {
   values           = [file("${path.module}/values.yaml")]
   timeout          = 600
   disable_webhooks = true
-  
+
 }
 
 resource "kubernetes_service" "pg-airbyte-external-svc" {

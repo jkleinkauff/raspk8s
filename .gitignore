@@ -7,3 +7,4 @@ postgres/kubegress-deploy/ext_service/tmp_service_master_apply.yaml
 postgres/kubegress-deploy/ext_service/tmp_service_replica_apply.yaml
 .terraform/
 terraform/airbyte-helm/values.yaml
+terraform/kafka-helm/values.yaml
