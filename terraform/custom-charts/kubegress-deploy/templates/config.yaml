@@ -17,7 +17,7 @@ data:
     lc_time = 'en_US.utf8'
     default_text_search_config = 'pg_catalog.english'
     default_transaction_read_only = 'off'
-    max_connections = 20
+    max_connections = {{ .Values.max_connections }}
     shared_buffers = 512MB
     effective_cache_size = 1536MB
     maintenance_work_mem = 256MB

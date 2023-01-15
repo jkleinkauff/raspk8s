@@ -10,6 +10,11 @@ resource "helm_release" "metallb" {
   repository = "https://metallb.github.io/metallb"
   chart      = "metallb"
   version    = "0.13.5"
+
+  values           = [file("${path.module}/values.yaml")]
+  timeout          = 600
+  disable_webhooks = true
+
 }
 
 resource "kubectl_manifest" "metallb-pool" {

@@ -8,6 +8,7 @@ backupSchedule: "0 */24 * * *"
 customPGImage: "postgres:14.4-alpine"
 pvc_bkp_name: pg-pvc-bkp 
 replicas: 3
+max_connections: 20
 wal_level: replica
 logging_collector: true
 log_statement: 'ddl'

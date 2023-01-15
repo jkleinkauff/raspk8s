@@ -4,6 +4,7 @@ customPGImage: "postgres:14.4-alpine"
 enableBackup: false
 pvc_bkp_name: pg-airbyte-pvc-bkp2
 replicas: 2
+max_connections: 100
 wal_level: logical
 logging_collector: false
 log_statement: 'none'

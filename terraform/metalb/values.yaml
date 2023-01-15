@@ -1,6 +1,11 @@
-configInline:
-  address-pools:
-   - name: default
-     protocol: layer2
-     addresses:
-     - 192.168.15.160-192.168.15.170
+speaker:
+  enabled: true
+  image:
+    repository: quay.io/metallb/speaker
+    tag:
+    pullPolicy:
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi

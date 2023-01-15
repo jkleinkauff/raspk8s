@@ -8,3 +8,7 @@ postgres/kubegress-deploy/ext_service/tmp_service_replica_apply.yaml
 .terraform/
 terraform/airbyte-helm/values.yaml
 terraform/kafka-helm/values.yaml
+delta-lake/.env
+delta-lake/*
+terraform/kafka-helm/values.yaml
+terraform/kafka-helm/values copy.yaml

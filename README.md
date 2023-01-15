@@ -94,7 +94,7 @@ On the second raspberry - or node:
 curl -sfL https://get.k3s.io | K3S_URL=https://masterip:6443 K3S_TOKEN=mastertoken sh -
 ```
 
-
+## Setup a new Orange PI 4/5 <a name="newrasp"></a>
 
 Future me, now you can head to /terraform and apply the other apps.
 

@@ -113,7 +113,11 @@ web:
 
   ## resource requests/limits for the web Pods
   ## [SPEC] https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
-  resources: {}
+  resources:
+    limits:
+      memory: 800Mi
+    requests:
+      memory: 350Mi
 
   ## configs for the Service of the web Pods
   service:
