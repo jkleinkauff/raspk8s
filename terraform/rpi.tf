@@ -18,12 +18,19 @@ module "airflow" {
 }
 
 module "airbyte" {
-  source     = "./airbyte-helm"
+  source = "./airbyte-helm"
 }
 
-module "jhodb" {
-  source = "./personal-db"
+module "monitoring" {
+  source = "./monitoring"
+
+  deploy_kafka_pod_monitors = true
 }
+
+
+# module "trino" {
+#   source = "./trino-helm"
+# }
 
 # module "exploredb" {
 #   source = "./explore-db"
@@ -36,8 +43,7 @@ module "jhodb" {
 #   deploy_sink_s3            = true
 # }
 
-module "monitoring" {
-  source = "./monitoring"
+# module "redshift" {
+#   source = "./aws-resources/redshift"
+# }
 
-  deploy_kafka_pod_monitors = true
-}

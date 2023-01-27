@@ -33,6 +33,7 @@ airflow:
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
     AIRFLOW__CORE__LOAD_EXAMPLES: "False"
     AIRFLOW__WEBSERVER__BASE_URL: "http://192.168.15.160/airflow"
+    AIRFLOW__WEBSERVER__WORKERS: "2"
 
   ## a list of users to create
   ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/security/airflow-users.md
@@ -115,9 +116,9 @@ web:
   ## [SPEC] https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
   resources:
     limits:
-      memory: 800Mi
+      memory: 1Gi
     requests:
-      memory: 350Mi
+      memory: 1Gi
 
   ## configs for the Service of the web Pods
   service:

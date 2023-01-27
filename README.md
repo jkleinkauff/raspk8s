@@ -96,6 +96,18 @@ curl -sfL https://get.k3s.io | K3S_URL=https://masterip:6443 K3S_TOKEN=mastertok
 
 ## Setup a new Orange PI 4/5 <a name="newrasp"></a>
 
+- Find the images in http://www.orangepi.org/html/serviceAndSupport/index.html
+- Prefer Debian releases as the Ubuntu one doesn't have the nand-sata-install
+
+* Orange PI 5 doesn't have Wifi so after checking if everything is running ok, just plug in the ethernet cable and go discover the IP. 
+
+The current version of Debian for the OPI5 has the following default users:
+
+
+- orangepi@orangepi
+- root@orangepi
+
+
 Future me, now you can head to /terraform and apply the other apps.
 
 - metallb
