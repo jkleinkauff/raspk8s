@@ -10,16 +10,16 @@ module "infra" {
   source = "./infra"
 }
 
-module "airflow" {
-  source     = "./airflow-helm"
-  airflow_ns = "airflow"
+# module "airflow" {
+#   source     = "./airflow-helm"
+#   airflow_ns = "airflow"
 
-  tls_key = module.infra.tls-git-ssh-key
-}
+#   tls_key = module.infra.tls-git-ssh-key
+# }
 
-module "airbyte" {
-  source = "./airbyte-helm"
-}
+# module "airbyte" {
+#   source = "./airbyte-helm"
+# }
 
 module "monitoring" {
   source = "./monitoring"
@@ -27,6 +27,9 @@ module "monitoring" {
   deploy_kafka_pod_monitors = true
 }
 
+# module "jhodb" {
+#   source = "./modules/jho-db"
+# }
 
 # module "trino" {
 #   source = "./trino-helm"
