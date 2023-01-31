@@ -1,0 +1,183 @@
+global:
+  ##  serviceAccountName -- Service Account name override
+  serviceAccountName: &service-account-name "airbyte-admin"
+  state:
+    ## state.storage.type Determines which state storage will be utilized.  One of "MINIO", "S3" or "GCS"
+    storage:
+      type: "S3"
+
+  logs:
+    accessKey:
+      password: ""
+      existingSecret: ""
+      existingSecretKey: ""
+
+    secretKey:
+      password: ""
+      existingSecret: ""
+      existingSecretKey: ""
+
+    minio:
+      enabled: false
+
+    externalMinio:
+      enabled: false
+      host: localhost
+      port: 9000
+
+    storage:
+      type: "S3"
+
+    s3:
+      enabled: true
+      bucket: airbyte-jho-dev-logs
+      bucketRegion: "us-east-1"
+
+  jobs:
+    resources:
+      requests:
+        cpu: 800m
+        memory: 2.2Gi
+      limits:
+        cpu: 800m
+        memory: 2.2Gi
+
+## Pods Service Account
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+##  serviceAccount.annotations -- [object] Annotations for service account. Evaluated as a template. Only used if `create` is `true`.
+##  serviceAccount.create -- Specifies whether a ServiceAccount should be created
+##  serviceAccount.name -- Name of the service account to use. If not set and create is true, a name is generated using the fullname template.
+##
+serviceAccount:
+  create: true
+  annotations: {}
+  name: *service-account-name
+
+server:
+  enabled: true
+  replicaCount: 1
+  extraEnv:
+    - name: AWS_ACCESS_KEY_ID
+      value: "***REMOVED***"
+    - name: AWS_SECRET_ACCESS_KEY
+      value: "+***REMOVED***"
+    - name: BASIC_AUTH_USERNAME
+      value: "jhonatas"
+    - name: BASIC_AUTH_PASSWORD
+      value: "kleinkauff"
+  service:
+    type: ClusterIP
+    port: 8001
+  resources:
+    requests:
+      memory: 600Mi
+    limits:
+      memory: 600Mi
+
+worker:
+  image:
+    repository: kleinkauff/airbyte-worker-arm
+    pullPolicy: IfNotPresent
+  enabled: true
+  replicaCount: 2
+  extraEnv:
+    - name: AWS_ACCESS_KEY_ID
+      value: "***REMOVED***"
+    - name: AWS_SECRET_ACCESS_KEY
+      value: "+***REMOVED***"
+    - name: BASIC_AUTH_USERNAME
+      value: "jhonatas"
+    - name: BASIC_AUTH_PASSWORD
+      value: "kleinkauff"
+  hpa:
+    enabled: false
+  resources:
+    requests:
+      cpu: 300m
+      memory: 550Mi
+    limits:
+      cpu: 1000m
+      memory: 550Mi
+
+webapp:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: airbyte/webapp
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    annotations: {}
+  ingress:
+    enabled: false
+    # className: "nginx"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+    hosts:
+    - host: ""
+      paths:
+      - path: /airbyte
+        pathType: ImplementationSpecific
+    tls: []
+    # - secretName: chart-example-tls
+    #   hosts:
+    #   - chart-example.local
+  api:
+    url: /api/v1/
+  resources:
+    requests:
+      memory: 40Mi
+    limits:
+      memory: 40Mi
+  extraEnv:
+    - name: BASIC_AUTH_USERNAME
+      value: "jhonatas"
+    - name: BASIC_AUTH_PASSWORD
+      value: "kleinkauff"
+  # extraVolumes:
+  #   - name: basic-auth
+  #     secret:
+  #       secretName: basic-auth
+  #   - name: default-conf-nginx
+  #     configMap:
+  #       name: default-conf-nginx
+  # extraVolumeMounts:
+  #   - name: basic-auth
+  #     mountPath: /etc/nginx/nginx-auth.conf
+  #     readOnly: true
+  #   - name: default-conf-nginx
+  #     mountPath: /etc/nginx/nginx.conf
+
+
+pod-sweeper:
+  enabled: true
+  image:
+    repository: portainer/kubectl-shell
+    pullPolicy: IfNotPresent
+    tag: latest
+
+temporal:
+  replicaCount: 1
+  image:
+    tag: "1.13.0-arm64"
+    pullPolicy: IfNotPresent
+
+minio:
+  enabled: false
+
+cron:
+  enabled: false
+
+airbyte-bootloader:
+  enabled: true
+
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: pg-airbyte.airbyte
+  user: postgres #user_airbyte
+  password: super_pwd #airbyte
+  database: airbyte
+  port: 5432
