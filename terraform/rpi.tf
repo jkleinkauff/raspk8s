@@ -6,19 +6,18 @@ module "nginx" {
   source = "./nginx"
 }
 
-module "infra" {
-  source = "./infra"
+module "git_keys" {
+  source = "./modules/git_keys"
+}
+
+module "airbyte" {
+  source = "./modules/airbyte-helm"
 }
 
 # module "airflow" {
-#   source     = "./airflow-helm"
-#   airflow_ns = "airflow"
-
-#   tls_key = module.infra.tls-git-ssh-key
-# }
-
-# module "airbyte" {
-#   source = "./airbyte-helm"
+#   source   = "./modules/airflow-helm"
+#   id_rsa   = module.git_keys.private_key
+#   open_ssh = module.git_keys.open_ssh
 # }
 
 module "monitoring" {
@@ -27,9 +26,9 @@ module "monitoring" {
   deploy_kafka_pod_monitors = true
 }
 
-# module "jhodb" {
-#   source = "./modules/jho-db"
-# }
+module "jhodb" {
+  source = "./modules/jho-db"
+}
 
 # module "trino" {
 #   source = "./trino-helm"
@@ -39,12 +38,12 @@ module "monitoring" {
 #   source = "./explore-db"
 # }
 
-# module "kafka" {
-#   source = "./kafka-helm"
+module "kafka" {
+  source = "./modules/kafka"
 
-#   deploy_debezium_connector = true
-#   deploy_sink_s3            = true
-# }
+  # deploy_debezium_connector = true
+  # deploy_sink_s3            = true
+}
 
 # module "redshift" {
 #   source = "./aws-resources/redshift"

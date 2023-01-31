@@ -1,18 +1,34 @@
-resource "helm_release" "airflow" {
+resource "kubernetes_namespace" "airflow_ns" {
+  metadata {
+    name = "airflow"
+  }
+}
+
+resource "helm_release" "airflow-main" {
   name = "airflow"
 
   repository = "https://airflow-helm.github.io/charts"
   chart      = "airflow"
   version    = "8.6.1"
 
-  namespace = var.airflow_ns
+  namespace = kubernetes_namespace.airflow_ns.metadata.0.name
 
-  values           = [file("${path.module}/values.yaml")]
-  timeout          = 320
+  # values           = [file("${path.module}/values.yaml")]
+  values = [
+    templatefile("${path.module}/values.yaml",
+      {
+        db_host     = module.airflow_db.db_host,
+        db_name     = module.airflow_db.db_name,
+        db_user     = module.airflow_db.db_user,
+        db_password = module.airflow_db.db_password
+    })
+  ]
+
+  timeout          = 350
   disable_webhooks = true
 
   depends_on = [
-    helm_release.postgres
+    module.airflow_db
   ]
 
   // Airflow Connections

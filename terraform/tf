@@ -1,0 +1,1971 @@
+[0m# module.nginx.helm_release.nginx:
+resource "helm_release" "nginx" {
+    [1m[0matomic[0m[0m                     = false
+    [1m[0mchart[0m[0m                      = "ingress-nginx"
+    [1m[0mcleanup_on_fail[0m[0m            = false
+    [1m[0mcreate_namespace[0m[0m           = false
+    [1m[0mdependency_update[0m[0m          = false
+    [1m[0mdisable_crd_hooks[0m[0m          = false
+    [1m[0mdisable_openapi_validation[0m[0m = false
+    [1m[0mdisable_webhooks[0m[0m           = false
+    [1m[0mforce_update[0m[0m               = false
+    [1m[0mid[0m[0m                         = "nginx-helm"
+    [1m[0mlint[0m[0m                       = false
+    [1m[0mmax_history[0m[0m                = 0
+    [1m[0mmetadata[0m[0m                   = [
+        {
+            app_version = "1.3.0"
+            chart       = "ingress-nginx"
+            name        = "nginx-helm"
+            namespace   = "ingress-nginx"
+            revision    = 1
+            values      = jsonencode(
+                {
+                    controller = {
+                        extraArgs      = {
+                            enable-ssl-passthrough = true
+                        }
+                        publishService = {
+                            enabled = true
+                        }
+                    }
+                    rbac       = {
+                        create = true
+                    }
+                }
+            )
+            version     = "4.2.3"
+        },
+    ]
+    [1m[0mname[0m[0m                       = "nginx-helm"
+    [1m[0mnamespace[0m[0m                  = "ingress-nginx"
+    [1m[0mpass_credentials[0m[0m           = false
+    [1m[0mrecreate_pods[0m[0m              = false
+    [1m[0mrender_subchart_notes[0m[0m      = true
+    [1m[0mreplace[0m[0m                    = false
+    [1m[0mrepository[0m[0m                 = "https://kubernetes.github.io/ingress-nginx"
+    [1m[0mreset_values[0m[0m               = false
+    [1m[0mreuse_values[0m[0m               = false
+    [1m[0mskip_crds[0m[0m                  = false
+    [1m[0mstatus[0m[0m                     = "deployed"
+    [1m[0mtimeout[0m[0m                    = 300
+    [1m[0mverify[0m[0m                     = false
+    [1m[0mversion[0m[0m                    = "4.2.3"
+    [1m[0mwait[0m[0m                       = true
+    [1m[0mwait_for_jobs[0m[0m              = false
+
+    set {
+        [1m[0mname[0m[0m  = "controller.extraArgs.enable-ssl-passthrough"
+        [1m[0mvalue[0m[0m = "true"
+    }
+    set {
+        [1m[0mname[0m[0m  = "controller.publishService.enabled"
+        [1m[0mvalue[0m[0m = "true"
+    }
+    set {
+        [1m[0mname[0m[0m  = "rbac.create"
+        [1m[0mvalue[0m[0m = "true"
+    }
+}
+
+
+
+# module.airflow.aws_iam_access_key.airflow:
+resource "aws_iam_access_key" "airflow" {
+    [1m[0mcreate_date[0m[0m          = "2023-01-27T14:36:57Z"
+    [1m[0mid[0m[0m                   = "AKIA2ABWPGCHJ4O4BNOU"
+    [1m[0msecret[0m[0m               = (sensitive value)
+    [1m[0mses_smtp_password_v4[0m[0m = (sensitive value)
+    [1m[0mstatus[0m[0m               = "Active"
+    [1m[0muser[0m[0m                 = "airflow-iam-user"
+}
+
+# module.airflow.aws_iam_user.airflow:
+resource "aws_iam_user" "airflow" {
+    [1m[0marn[0m[0m           = "arn:aws:iam::687309009038:user/airflow-iam-user"
+    [1m[0mforce_destroy[0m[0m = false
+    [1m[0mid[0m[0m            = "airflow-iam-user"
+    [1m[0mname[0m[0m          = "airflow-iam-user"
+    [1m[0mpath[0m[0m          = "/"
+    [1m[0mtags_all[0m[0m      = {}
+    [1m[0munique_id[0m[0m     = "AIDA2ABWPGCHOMCOQGVWS"
+}
+
+# module.airflow.aws_iam_user_policy.access_s3_read_write:
+resource "aws_iam_user_policy" "access_s3_read_write" {
+    [1m[0mid[0m[0m     = "airflow-iam-user:S3_Read_Write"
+    [1m[0mname[0m[0m   = "S3_Read_Write"
+    [1m[0mpolicy[0m[0m = jsonencode(
+        {
+            Statement = [
+                {
+                    Action   = [
+                        "s3:PutObject*",
+                        "s3:ListBucket",
+                        "s3:GetObject*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = "arn:aws:s3:::rpi-airflow-logs/*"
+                    Sid      = "S3ReadWrite"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    [1m[0muser[0m[0m   = "airflow-iam-user"
+}
+
+# module.airflow.aws_s3_bucket.logs:
+resource "aws_s3_bucket" "logs" {
+    [1m[0marn[0m[0m                         = "arn:aws:s3:::rpi-airflow-logs"
+    [1m[0mbucket[0m[0m                      = "rpi-airflow-logs"
+    [1m[0mbucket_domain_name[0m[0m          = "rpi-airflow-logs.s3.amazonaws.com"
+    [1m[0mbucket_regional_domain_name[0m[0m = "rpi-airflow-logs.s3.amazonaws.com"
+    [1m[0mforce_destroy[0m[0m               = true
+    [1m[0mhosted_zone_id[0m[0m              = "Z3AQBSTGFYJSTF"
+    [1m[0mid[0m[0m                          = "rpi-airflow-logs"
+    [1m[0mobject_lock_enabled[0m[0m         = false
+    [1m[0mregion[0m[0m                      = "us-east-1"
+    [1m[0mrequest_payer[0m[0m               = "BucketOwner"
+    [1m[0mtags[0m[0m                        = {
+        "Name"      = "rpi-airflow-logs"
+        "raspberry" = "true"
+    }
+    [1m[0mtags_all[0m[0m                    = {
+        "Name"      = "rpi-airflow-logs"
+        "raspberry" = "true"
+    }
+
+    grant {
+        [1m[0mid[0m[0m          = "38781aadefbfd3d42c451a5c149cad5516a0cb3a583e1fb048e8d0227cd06274"
+        [1m[0mpermissions[0m[0m = [
+            "FULL_CONTROL",
+        ]
+        [1m[0mtype[0m[0m        = "CanonicalUser"
+    }
+
+    versioning {
+        [1m[0menabled[0m[0m    = false
+        [1m[0mmfa_delete[0m[0m = false
+    }
+}
+
+# module.airflow.aws_s3_bucket_acl.logs:
+resource "aws_s3_bucket_acl" "logs" {
+    [1m[0macl[0m[0m    = "private"
+    [1m[0mbucket[0m[0m = "rpi-airflow-logs"
+    [1m[0mid[0m[0m     = "rpi-airflow-logs,private"
+
+    access_control_policy {
+        grant {
+            [1m[0mpermission[0m[0m = "FULL_CONTROL"
+
+            grantee {
+                [1m[0mdisplay_name[0m[0m = "kleinkauffaws"
+                [1m[0mid[0m[0m           = "38781aadefbfd3d42c451a5c149cad5516a0cb3a583e1fb048e8d0227cd06274"
+                [1m[0mtype[0m[0m         = "CanonicalUser"
+            }
+        }
+
+        owner {
+            [1m[0mdisplay_name[0m[0m = "kleinkauffaws"
+            [1m[0mid[0m[0m           = "38781aadefbfd3d42c451a5c149cad5516a0cb3a583e1fb048e8d0227cd06274"
+        }
+    }
+}
+
+# module.airflow.aws_s3_bucket_versioning.logs:
+resource "aws_s3_bucket_versioning" "logs" {
+    [1m[0mbucket[0m[0m = "rpi-airflow-logs"
+    [1m[0mid[0m[0m     = "rpi-airflow-logs"
+
+    versioning_configuration {
+        [1m[0mstatus[0m[0m = "Enabled"
+    }
+}
+
+# module.airflow.data.aws_iam_policy_document.access_s3_read_write:
+data "aws_iam_policy_document" "access_s3_read_write" {
+    [1m[0mid[0m[0m      = "2071409760"
+    [1m[0mjson[0m[0m    = jsonencode(
+        {
+            Statement = [
+                {
+                    Action   = [
+                        "s3:PutObject*",
+                        "s3:ListBucket",
+                        "s3:GetObject*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = "arn:aws:s3:::rpi-airflow-logs/*"
+                    Sid      = "S3ReadWrite"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    [1m[0mversion[0m[0m = "2012-10-17"
+
+    statement {
+        [1m[0mactions[0m[0m       = [
+            "s3:GetObject*",
+            "s3:ListBucket",
+            "s3:PutObject*",
+        ]
+        [1m[0meffect[0m[0m        = "Allow"
+        [1m[0mnot_actions[0m[0m   = []
+        [1m[0mnot_resources[0m[0m = []
+        [1m[0mresources[0m[0m     = [
+            "arn:aws:s3:::rpi-airflow-logs/*",
+        ]
+        [1m[0msid[0m[0m           = "S3ReadWrite"
+    }
+}
+
+# module.airflow.helm_release.airflow-main: (tainted)
+resource "helm_release" "airflow-main" {
+    [1m[0matomic[0m[0m                     = false
+    [1m[0mchart[0m[0m                      = "airflow"
+    [1m[0mcleanup_on_fail[0m[0m            = false
+    [1m[0mcreate_namespace[0m[0m           = false
+    [1m[0mdependency_update[0m[0m          = false
+    [1m[0mdisable_crd_hooks[0m[0m          = false
+    [1m[0mdisable_openapi_validation[0m[0m = false
+    [1m[0mdisable_webhooks[0m[0m           = true
+    [1m[0mforce_update[0m[0m               = false
+    [1m[0mid[0m[0m                         = "airflow"
+    [1m[0mlint[0m[0m                       = false
+    [1m[0mmax_history[0m[0m                = 0
+    [1m[0mmetadata[0m[0m                   = [
+        {
+            app_version = "2.2.5"
+            chart       = "airflow"
+            name        = "airflow"
+            namespace   = "airflow"
+            revision    = 1
+            values      = jsonencode(
+                {
+                    airflow          = {
+                        config                = {
+                            AIRFLOW__CORE__ENCRYPT_S3_LOGS        = "false"
+                            AIRFLOW__CORE__LOAD_EXAMPLES          = "False"
+                            AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER = "s3://rpi-airflow-logs"
+                            AIRFLOW__CORE__REMOTE_LOGGING         = "True"
+                            AIRFLOW__CORE__REMOTE_LOG_CONN_ID     = "aws"
+                            AIRFLOW__WEBSERVER__BASE_URL          = "http://192.168.15.160/airflow"
+                            AIRFLOW__WEBSERVER__EXPOSE_CONFIG     = "False"
+                            AIRFLOW__WEBSERVER__WORKERS           = "2"
+                        }
+                        connections           = [
+                            {
+                                id       = "aws"
+                                login    = "AKIA2ABWPGCHJ4O4BNOU"
+                                password = "5aXuDoIAeQTjM7ojGKYojtbYogMx9qa52V2WJYbd"
+                                type     = "aws"
+                            },
+                        ]
+                        connectionsUpdate     = true
+                        executor              = "KubernetesExecutor"
+                        extraPipPackages      = []
+                        fernetKey             = "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
+                        image                 = {
+                            repository = "apache/airflow"
+                            tag        = "2.3.3-python3.8"
+                        }
+                        kubernetesPodTemplate = {
+                            resources      = {}
+                            stringOverride = ""
+                        }
+                        legacyCommands        = false
+                        pools                 = []
+                        users                 = [
+                            {
+                                email     = "admin@example.com"
+                                firstName = "admin"
+                                lastName  = "admin"
+                                password  = "admin"
+                                role      = "Admin"
+                                username  = "admin"
+                            },
+                        ]
+                        variables             = []
+                        webserverSecretKey    = "THIS IS UNSAFE!"
+                    }
+                    dags             = {
+                        doNotPickle = false
+                        gitSync     = {
+                            branch                = "main"
+                            depth                 = 1
+                            enabled               = true
+                            httpSecret            = ""
+                            httpSecretPasswordKey = "password"
+                            httpSecretUsernameKey = "username"
+                            image                 = {
+                                gid        = 65533
+                                pullPolicy = "IfNotPresent"
+                                repository = "k8s.gcr.io/git-sync/git-sync"
+                                tag        = "v3.2.2"
+                                uid        = 65533
+                            }
+                            repo                  = "git@github.com:jkleinkauff/dags-sync.git"
+                            repoSubPath           = ""
+                            resources             = {}
+                            revision              = "HEAD"
+                            sshKnownHosts         = ""
+                            sshSecret             = "airflow-secrets"
+                            sshSecretKey          = "id_rsa"
+                            syncTimeout           = 120
+                            syncWait              = 60
+                        }
+                        path        = "/usr/local/airflow/dags"
+                        persistence = {
+                            enabled = false
+                        }
+                    }
+                    externalDatabase = {
+                        database   = "airflow"
+                        host       = "pg-airflow.airflow"
+                        password   = "airflow"
+                        port       = 5432
+                        properties = ""
+                        type       = "postgres"
+                        user       = "user_airflow"
+                    }
+                    externalRedis    = {
+                        host = "localhost"
+                    }
+                    extraManifests   = []
+                    flower           = {
+                        enabled = false
+                    }
+                    ingress          = {
+                        apiVersion = "networking.k8s.io/v1"
+                        enabled    = true
+                        web        = {
+                            annotations      = {}
+                            host             = ""
+                            ingressClassName = "nginx"
+                            labels           = {}
+                            path             = "/airflow"
+                        }
+                    }
+                    logs             = {
+                        path        = "/opt/airflow/logs"
+                        persistence = {
+                            enabled = false
+                        }
+                    }
+                    pgbouncer        = {
+                        authType     = "md5"
+                        enabled      = true
+                        image        = {
+                            gid        = 1001
+                            pullPolicy = "IfNotPresent"
+                            repository = "ghcr.io/airflow-helm/pgbouncer"
+                            tag        = "latest@sha256:a7d0571ed20db49d5ad88cf84936cf036418c2fc11069dffa5d0526c80ceb2d7"
+                            uid        = 1001
+                        }
+                        nodeSelector = {
+                            "kubernetes.io/hostname" = "rpiworker8a"
+                        }
+                        resources    = {}
+                    }
+                    postgresql       = {
+                        enabled     = false
+                        persistence = {
+                            enabled      = true
+                            size         = "6Gi"
+                            storageClass = ""
+                        }
+                    }
+                    redis            = {
+                        enabled = false
+                    }
+                    scheduler        = {
+                        livenessProbe = {
+                            enabled           = true
+                            taskCreationCheck = {
+                                enabled                 = false
+                                schedulerAgeBeforeCheck = 180
+                                thresholdSeconds        = 300
+                            }
+                        }
+                        logCleanup    = {
+                            enabled          = true
+                            retentionMinutes = 21600
+                        }
+                        replicas      = 1
+                        resources     = {}
+                    }
+                    serviceAccount   = {
+                        annotations = {}
+                        create      = true
+                        name        = ""
+                    }
+                    triggerer        = {
+                        capacity  = 1000
+                        enabled   = false
+                        replicas  = 1
+                        resources = {}
+                    }
+                    web              = {
+                        livenessProbe   = {
+                            enabled             = true
+                            failureThreshold    = 6
+                            initialDelaySeconds = 120
+                            periodSeconds       = 10
+                            timeoutSeconds      = 20
+                        }
+                        readinessProbe  = {
+                            enabled             = true
+                            failureThreshold    = 6
+                            initialDelaySeconds = 120
+                            periodSeconds       = 10
+                            timeoutSeconds      = 20
+                        }
+                        replicas        = 1
+                        resources       = {
+                            limits   = {
+                                memory = "1Gi"
+                            }
+                            requests = {
+                                memory = "1Gi"
+                            }
+                        }
+                        service         = {
+                            externalPort = 8080
+                            type         = "ClusterIP"
+                        }
+                        webserverConfig = {
+                            existingSecret = ""
+                            stringOverride = <<-EOT
+                                from airflow import configuration as conf
+                                from flask_appbuilder.security.manager import AUTH_DB
+                                
+                                # the SQLAlchemy connection string
+                                SQLALCHEMY_DATABASE_URI = conf.get("core", "SQL_ALCHEMY_CONN")
+                                
+                                # use embedded DB for auth
+                                AUTH_TYPE = AUTH_DB
+                            EOT
+                        }
+                    }
+                    workers          = {
+                        enabled = false
+                    }
+                }
+            )
+            version     = "8.6.1"
+        },
+    ]
+    [1m[0mname[0m[0m                       = "airflow"
+    [1m[0mnamespace[0m[0m                  = "airflow"
+    [1m[0mpass_credentials[0m[0m           = false
+    [1m[0mrecreate_pods[0m[0m              = false
+    [1m[0mrender_subchart_notes[0m[0m      = true
+    [1m[0mreplace[0m[0m                    = false
+    [1m[0mrepository[0m[0m                 = "https://airflow-helm.github.io/charts"
+    [1m[0mreset_values[0m[0m               = false
+    [1m[0mreuse_values[0m[0m               = false
+    [1m[0mskip_crds[0m[0m                  = false
+    [1m[0mstatus[0m[0m                     = "failed"
+    [1m[0mtimeout[0m[0m                    = 300
+    [1m[0mvalues[0m[0m                     = [
+        <<-EOT
+            ########################################
+            ## CONFIG | Airflow Configs
+            ########################################
+            airflow:
+              ## if we use legacy 1.10 airflow commands
+              legacyCommands: false
+            
+              ## configs for the airflow container image
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/configuration/airflow-version.md
+              image:
+                repository: apache/airflow
+                tag: 2.3.3-python3.8
+            
+              ## the airflow executor type to use
+              executor: KubernetesExecutor
+            
+              ## the fernet encryption key (sets `AIRFLOW__CORE__FERNET_KEY`)
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/security/set-fernet-key.md
+              ## [WARNING] change from default value to ensure security
+              fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
+            
+              ## the secret_key for flask (sets `AIRFLOW__WEBSERVER__SECRET_KEY`)
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/security/set-webserver-secret-key.md
+              ## [WARNING] change from default value to ensure security
+              webserverSecretKey: "THIS IS UNSAFE!"
+            
+              ## environment variables for airflow configs
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/configuration/airflow-configs.md
+              config:
+                AIRFLOW__CORE__REMOTE_LOGGING: "True"
+                AIRFLOW__CORE__REMOTE_LOG_CONN_ID: "aws"
+                AIRFLOW__CORE__ENCRYPT_S3_LOGS: "false"
+                AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
+                AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+                AIRFLOW__WEBSERVER__BASE_URL: "http://192.168.15.160/airflow"
+                AIRFLOW__WEBSERVER__WORKERS: "2"
+            
+              ## a list of users to create
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/security/airflow-users.md
+              users:
+                - username: admin
+                  password: admin
+                  role: Admin
+                  email: admin@example.com
+                  firstName: admin
+                  lastName: admin
+            
+              ## a list airflow variables to create
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/dags/airflow-variables.md
+              variables: []
+            
+              ## a list airflow pools to create
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/dags/airflow-pools.md
+              pools: []
+            
+              ## extra pip packages to install in airflow Pods
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/configuration/extra-python-packages.md
+              ## [WARNING] this feature is not recommended for production use, see docs
+              extraPipPackages: []
+            
+              ## configs generating the `pod_template.yaml` file for `AIRFLOW__KUBERNETES__POD_TEMPLATE_FILE`
+              ## [NOTE] the `dags.gitSync` values will create a git-sync init-container in the pod
+              ## [NOTE] the `airflow.extraPipPackages` will NOT be installed
+              kubernetesPodTemplate:
+            
+                ## the full content of the pod-template file (as a string)
+                ## [NOTE] all other `kubernetesPodTemplate.*` are disabled when this is set
+                stringOverride: ""
+            
+                ## resource requests/limits for the Pod template "base" container
+                ## [SPEC] https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
+                resources: {}
+            
+            
+              ## if we create a Deployment to perpetually sync `airflow.connections`
+              ## - see docs for `airflow.usersUpdate`
+              ##
+              connectionsUpdate: true
+            ###################################
+            ## COMPONENT | Airflow Scheduler
+            ###################################
+            scheduler:
+              ## the number of scheduler Pods to run
+              replicas: 1
+            
+              ## resource requests/limits for the scheduler Pods
+              ## [SPEC] https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
+              resources: {}
+            
+              ## configs for the log-cleanup sidecar of the scheduler
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/monitoring/log-cleanup.md
+              logCleanup:
+                enabled: true
+                retentionMinutes: 21600
+            
+              ## configs for the scheduler Pods' liveness probe
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/monitoring/scheduler-liveness-probe.md
+              livenessProbe:
+                enabled: true
+            
+                ## configs for an additional check that ensures tasks are being created by the scheduler
+                ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/monitoring/scheduler-liveness-probe.md
+                taskCreationCheck:
+                  enabled: false
+                  thresholdSeconds: 300
+                  schedulerAgeBeforeCheck: 180
+            
+            ###################################
+            ## COMPONENT | Airflow Webserver
+            ###################################
+            web:
+              ## the number of web Pods to run
+              replicas: 1
+            
+              ## resource requests/limits for the web Pods
+              ## [SPEC] https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
+              resources:
+                limits:
+                  memory: 1Gi
+                requests:
+                  memory: 1Gi
+            
+              ## configs for the Service of the web Pods
+              service:
+                type: ClusterIP
+                externalPort: 8080
+            
+              ## configs generating the `webserver_config.py` file
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/configuration/airflow-configs.md#webserver_configpy
+              webserverConfig:
+                ## the full content of the `webserver_config.py` file (as a string)
+                stringOverride: |
+                  from airflow import configuration as conf
+                  from flask_appbuilder.security.manager import AUTH_DB
+            
+                  # the SQLAlchemy connection string
+                  SQLALCHEMY_DATABASE_URI = conf.get("core", "SQL_ALCHEMY_CONN")
+            
+                  # use embedded DB for auth
+                  AUTH_TYPE = AUTH_DB
+            
+                ## the name of a Secret containing a `webserver_config.py` key
+                existingSecret: ""
+            
+              ## configs for the web Pods' readiness probe
+              ##
+              readinessProbe:
+                enabled: true
+                initialDelaySeconds: 120
+                periodSeconds: 10
+                timeoutSeconds: 20
+                failureThreshold: 6
+            
+              ## configs for the web Pods' liveness probe
+              ##
+              livenessProbe:
+                enabled: true
+                initialDelaySeconds: 120
+                periodSeconds: 10
+                timeoutSeconds: 20
+                failureThreshold: 6
+            
+            ###################################
+            ## COMPONENT | Airflow Workers
+            ###################################
+            workers:
+              ## if the airflow workers StatefulSet should be deployed
+              enabled: false
+            
+            ###################################
+            ## COMPONENT | Triggerer
+            ###################################
+            triggerer:
+              ## if the airflow triggerer should be deployed
+              enabled: false
+            
+              ## the number of triggerer Pods to run
+              replicas: 1
+            
+              ## resource requests/limits for the triggerer Pods
+              ## [SPEC] https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
+              resources: {}
+            
+              ## maximum number of triggers each triggerer will run at once (sets `AIRFLOW__TRIGGERER__DEFAULT_CAPACITY`)
+              capacity: 1000
+            
+            ###################################
+            ## COMPONENT | Flower
+            ###################################
+            flower:
+              ## if the airflow flower UI should be deployed
+              enabled: false
+            
+            ###################################
+            ## CONFIG | Airflow Logs
+            ###################################
+            logs:
+              ## the airflow logs folder
+              path: /opt/airflow/logs
+            
+              ## configs for the logs PVC
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/monitoring/log-persistence.md
+              persistence:
+                enabled: false
+            
+            ###################################
+            # Airflow - DAGs Configs
+            ###################################
+            ##
+            ## Configure DAGs deployment and update
+            dags:
+              ##
+              ## mount path for persistent volume.
+              ## Note that this location is referred to in airflow.cfg, so if you change it, you must update airflow.cfg accordingly.
+              path: /usr/local/airflow/dags
+              ## configs for the dags PVC
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/dags/load-dag-definitions.md
+              persistence:
+                enabled: false
+              ##
+              ## Set to True to prevent pickling DAGs from scheduler to workers
+              doNotPickle: false
+              ##
+              ## Configure Git repository to fetch DAGs
+              gitSync:
+                ## if the git-sync sidecar container is enabled
+                ##
+                enabled: true
+                ## the git-sync container image
+                ##
+                image:
+                  repository: k8s.gcr.io/git-sync/git-sync
+                  tag: v3.2.2
+                  ## values: Always or IfNotPresent
+                  pullPolicy: IfNotPresent
+                  uid: 65533
+                  gid: 65533
+                ## resource requests/limits for the git-sync container
+                ##
+                ## EXAMPLE:
+                ##   resources:
+                ##     requests:
+                ##       cpu: "50m"
+                ##       memory: "64Mi"
+                ##
+                resources: {}
+                ## the url of the git repo
+                ##
+                ## EXAMPLE - HTTPS:
+                ##    repo: "https://github.com/USERNAME/REPOSITORY.git"
+                ##
+                ## EXAMPLE - SSH:
+                ##    repo: "git@github.com:USERNAME/REPOSITORY.git"
+                ##
+                repo: git@github.com:jkleinkauff/dags-sync.git
+                ## the sub-path (within your repo) where dags are located
+                ##
+                ## NOTE:
+                ## - only dags under this path (within your repo) will be seen by airflow,
+                ##   but the full repo will be cloned
+                ##
+                repoSubPath: ""
+                ## the git branch to check out
+                ##
+                branch: main
+                ## the git revision (tag or hash) to check out
+                ##
+                revision: HEAD
+                ## shallow clone with a history truncated to the specified number of commits
+                ##
+                depth: 1
+                ## the number of seconds between syncs
+                ##
+                syncWait: 60
+                ## the max number of seconds allowed for a complete sync
+                ##
+                syncTimeout: 120
+                ## the name of a pre-created Secret with git http credentials
+                ##
+                httpSecret: ""
+                ## the key in `dags.gitSync.httpSecret` with your git username
+                ##
+                httpSecretUsernameKey: username
+                ## the key in `dags.gitSync.httpSecret` with your git password/token
+                ##
+                httpSecretPasswordKey: password
+                ## the name of a pre-created Secret with git ssh credentials
+                ##
+                sshSecret: "airflow-secrets"
+                ## the key in `dags.gitSync.sshSecret` with your ssh-key file
+                ##
+                sshSecretKey: id_rsa
+                ## the string value of a "known_hosts" file (for SSH only)
+                ##
+                ## WARNING:
+                ## - known_hosts verification will be disabled if left empty, making you more
+                ##   vulnerable to repo spoofing attacks
+                ##
+                ## EXAMPLE:
+                ##    sshKnownHosts: |-
+                ##      <HOST_NAME> ssh-rsa <HOST_KEY>
+                ##
+                sshKnownHosts: ""
+            
+            ###################################
+            ## CONFIG | Kubernetes Ingress
+            ###################################
+            ingress:
+              ## if we should deploy Ingress resources
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/kubernetes/ingress.md
+              enabled: false
+            
+            ###################################
+            ## CONFIG | Kubernetes ServiceAccount
+            ###################################
+            serviceAccount:
+              ## if a Kubernetes ServiceAccount is created
+              create: true
+            
+              ## the name of the ServiceAccount
+              name: ""
+            
+              ## annotations for the ServiceAccount
+              annotations: {}
+            
+            ###################################
+            ## CONFIG | Kubernetes Extra Manifests
+            ###################################
+            
+            ## a list of extra Kubernetes manifests that will be deployed alongside the chart
+            ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/kubernetes/extra-manifests.md
+            extraManifests: []
+            
+            ###################################
+            ## DATABASE | PgBouncer
+            ###################################
+            pgbouncer:
+              image:
+                repository: ghcr.io/airflow-helm/pgbouncer
+                tag: latest@sha256:a7d0571ed20db49d5ad88cf84936cf036418c2fc11069dffa5d0526c80ceb2d7
+                pullPolicy: IfNotPresent
+                uid: 1001
+                gid: 1001
+            
+            
+              nodeSelector:
+                kubernetes.io/hostname: rpiworker8a
+            
+              ## if the pgbouncer Deployment is created
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/database/pgbouncer.md
+              enabled: true
+            
+              ## resource requests/limits for the pgbouncer Pods
+              ## [SPEC] https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
+              resources: {}
+            
+              ## sets pgbouncer config: `auth_type`
+              authType: md5
+            
+            ###################################
+            ## DATABASE | Embedded Postgres
+            ###################################
+            postgresql:
+              ## if the `stable/postgresql` chart is used
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/database/embedded-database.md
+              ## [WARNING] the embedded Postgres is NOT SUITABLE for production deployments of Airflow
+              ## [WARNING] consider using an external database with `externalDatabase.*`
+              enabled: false
+            
+              ## configs for the PVC of postgresql
+              persistence:
+                enabled: true
+                storageClass: ""
+                size: 6Gi
+            
+            ###################################
+            ## DATABASE | External Database
+            ###################################
+            
+            externalDatabase:
+              type: postgres
+            
+              host: pg-airflow.airflow
+              port: 5432
+            
+              ## the schema which will contain the airflow tables
+              database: airflow
+            
+              ## (username - option 1) a plain-text helm value
+              user: user_airflow
+            
+              ## (username - option 2) a Kubernetes secret in your airflow namespace
+              #userSecret: "airflow-cluster1-database-credentials"
+              #userSecretKey: "username"
+            
+              ## (password - option 1) a plain-text helm value
+              password: airflow
+            
+              ## (password - option 2) a Kubernetes secret in your airflow namespace
+              #passwordSecret: "airflow-cluster1-database-credentials"
+              #passwordSecretKey: "password"
+            
+              ## use this for any extra connection-string settings, e.g. ?sslmode=disable
+              properties: ""
+            
+            ###################################
+            ## DATABASE | Embedded Redis
+            ###################################
+            redis:
+              ## if the `stable/redis` chart is used
+              enabled: false
+            
+            ###################################
+            ## DATABASE | External Redis
+            ###################################
+            externalRedis:
+              ## the host of the external redis
+              ## [FAQ] https://github.com/airflow-helm/charts/blob/main/charts/airflow/docs/faq/database/external-redis.md
+              host: localhost
+            
+            ingress:
+              ## if we should deploy Ingress resources
+              ##
+              enabled: true
+            
+              ## the `apiVersion` to use for Ingress resources
+              ## - for Kubernetes 1.19 and later: "networking.k8s.io/v1"
+              ## - for Kubernetes 1.18 and before: "networking.k8s.io/v1beta1"
+              ##
+              apiVersion: networking.k8s.io/v1
+            
+              ## configs for the Ingress of the web Service
+              ##
+              web:
+                ## annotations for the web Ingress
+                ##
+                annotations: {}
+            
+                ## additional labels for the web Ingress
+                ##
+                labels: {}
+            
+                ## the path for the web Ingress
+                ## - [WARNING] do NOT include the trailing slash (for root, set an empty string)
+                ##
+                ## ____ EXAMPLE _______________
+                ##   # webserver URL: http://example.com/airflow
+                ##   path: "/airflow"
+                ##
+                path: "/airflow"
+            
+                ## the hostname for the web Ingress
+                ##
+                host: ""
+            
+                ## the Ingress Class for the web Ingress
+                ## - [WARNING] requires Kubernetes 1.18 or later, use "kubernetes.io/ingress.class" annotation for older versions
+                ##
+                ingressClassName: "nginx"
+        EOT,
+    ]
+    [1m[0mverify[0m[0m                     = false
+    [1m[0mversion[0m[0m                    = "8.6.1"
+    [1m[0mwait[0m[0m                       = true
+    [1m[0mwait_for_jobs[0m[0m              = false
+
+    set {
+        [1m[0mname[0m[0m  = "airflow.config.AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER"
+        [1m[0mvalue[0m[0m = "s3://rpi-airflow-logs"
+    }
+    set {
+        [1m[0mname[0m[0m  = "airflow.connections[0].id"
+        [1m[0mvalue[0m[0m = "aws"
+    }
+    set {
+        [1m[0mname[0m[0m  = "airflow.connections[0].login"
+        [1m[0mvalue[0m[0m = "AKIA2ABWPGCHJ4O4BNOU"
+    }
+    set {
+        [1m[0mname[0m[0m  = "airflow.connections[0].type"
+        [1m[0mvalue[0m[0m = "aws"
+    }
+
+    set_sensitive {
+      # At least one attribute in this block is (or was) sensitive,
+      # so its contents will not be displayed.
+    }
+}
+
+# module.airflow.kubernetes_namespace.airflow_ns:
+resource "kubernetes_namespace" "airflow_ns" {
+    [1m[0mid[0m[0m = "airflow"
+
+    metadata {
+        [1m[0mgeneration[0m[0m       = 0
+        [1m[0mname[0m[0m             = "airflow"
+        [1m[0mresource_version[0m[0m = "30474756"
+        [1m[0muid[0m[0m              = "ede81da7-bd94-41b7-ab46-13bb7af2ce0b"
+    }
+}
+
+# module.airflow.kubernetes_secret.ssh-secrets:
+resource "kubernetes_secret" "ssh-secrets" {
+    [1m[0mdata[0m[0m                           = (sensitive value)
+    [1m[0mid[0m[0m                             = "airflow/airflow-ssh-secrets"
+    [1m[0mimmutable[0m[0m                      = false
+    [1m[0mtype[0m[0m                           = "Opaque"
+    [1m[0mwait_for_service_account_token[0m[0m = true
+
+    metadata {
+        [1m[0mgeneration[0m[0m       = 0
+        [1m[0mname[0m[0m             = "airflow-ssh-secrets"
+        [1m[0mnamespace[0m[0m        = "airflow"
+        [1m[0mresource_version[0m[0m = "30474774"
+        [1m[0muid[0m[0m              = "a289de68-5e2d-4767-b065-789e26bc6aea"
+    }
+}
+
+# module.airflow.tls_private_key.git_dags:
+resource "tls_private_key" "git_dags" {
+    [1m[0malgorithm[0m[0m                     = "RSA"
+    [1m[0mecdsa_curve[0m[0m                   = "P224"
+    [1m[0mid[0m[0m                            = "cdb17a1c90bdaff421a69fa969062dad7d1db50e"
+    [1m[0mprivate_key_openssh[0m[0m           = (sensitive value)
+    [1m[0mprivate_key_pem[0m[0m               = (sensitive value)
+    [1m[0mprivate_key_pem_pkcs8[0m[0m         = (sensitive value)
+    [1m[0mpublic_key_fingerprint_md5[0m[0m    = "6d:f9:d3:54:91:08:86:fd:57:1a:2e:b2:fb:1e:6e:a1"
+    [1m[0mpublic_key_fingerprint_sha256[0m[0m = "SHA256:QY7IIB2bH9s44lt9Z7yxGAmCi5cHKWA+RyUu+KgQMC8"
+    [1m[0mpublic_key_openssh[0m[0m            = <<-EOT
+        ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDF8RkfkEEohw2SLlZX3hr8UFmuJXD+xfdGC1DeBFbX1KmGNoyEFr5YV4OVTtyal5XDQiR0sA4xHZAvd+ZGXWAHG2KphJX2VwfddO6oflZOWk4/SKa6QZvu9WPkqg61StFsm8DFVjJPo8SUMkxUZ53YIQCA0nOOQzm69AU01yWhNY93AldWiqDK1riRAdfo1wH/AdaSJJbvwlXcALlYccAc/XRwnwKXUPvnhOwez6jZDt65Wn1gdfMorwbIC8vwDm4qOre5Ye7GpQGLlIjfvmWkTbj2h7VNfdG512fSr3bvBh4ZMMlIsFaSqGugI+KuMFMMZa9a9gj1OH4zx4+Al3XLKV92N5KcKsGdn6pVie9SFKjqksXA4/+dEl7mGb/MeHm1W0Y7fWzfoaec9d8IegtFCIv9JCPvqF1KjYFssKm+mVj0/Io5k1Zz+OfuZZKqDlsfyu4H4DbVNMcGmYeCtvbrm0FuzodDCr+bxgqg8YtzMBf/o2Rtk5+rCt2l4Msi/PKYnuyUMrqK/61YfH9wuNrzb8sNrOiVLfrcfX7gqezA7QvbFoPbNqIU0YBiptkZ2Z3wKTp23HfpHt7DchYHhZ17Fk7ulb/nY86OF6KFLZEt4EPLw0sdWr4SwDx8p6pxVNqDKidxy6Xun5w/X+TjYilt5MaYbs4653h1tDzpZc3c7Q==
+    EOT
+    [1m[0mpublic_key_pem[0m[0m                = <<-EOT
+        -----BEGIN PUBLIC KEY-----
+        MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxfEZH5BBKIcNki5WV94a
+        /FBZriVw/sX3RgtQ3gRW19SphjaMhBa+WFeDlU7cmpeVw0IkdLAOMR2QL3fmRl1g
+        BxtiqYSV9lcH3XTuqH5WTlpOP0imukGb7vVj5KoOtUrRbJvAxVYyT6PElDJMVGed
+        2CEAgNJzjkM5uvQFNNcloTWPdwJXVoqgyta4kQHX6NcB/wHWkiSW78JV3AC5WHHA
+        HP10cJ8Cl1D754TsHs+o2Q7euVp9YHXzKK8GyAvL8A5uKjq3uWHuxqUBi5SI375l
+        pE249oe1TX3Ruddn0q927wYeGTDJSLBWkqhroCPirjBTDGWvWvYI9Th+M8ePgJd1
+        yylfdjeSnCrBnZ+qVYnvUhSo6pLFwOP/nRJe5hm/zHh5tVtGO31s36GnnPXfCHoL
+        RQiL/SQj76hdSo2BbLCpvplY9PyKOZNWc/jn7mWSqg5bH8ruB+A21TTHBpmHgrb2
+        65tBbs6HQwq/m8YKoPGLczAX/6NkbZOfqwrdpeDLIvzymJ7slDK6iv+tWHx/cLja
+        82/LDazolS363H1+4KnswO0L2xaD2zaiFNGAYqbZGdmd8Ck6dtx36R7ew3IWB4Wd
+        exZO7pW/52POjheihS2RLeBDy8NLHVq+EsA8fKeqcVTagyonccul7p+cP1/k42Ip
+        beTGmG7OOud4dbQ86WXN3O0CAwEAAQ==
+        -----END PUBLIC KEY-----
+    EOT
+    [1m[0mrsa_bits[0m[0m                      = 4096
+}
+
+
+# module.airflow.module.airflow_db.data.kubernetes_service.pg_current_svc:
+data "kubernetes_service" "pg_current_svc" {
+}
+
+# module.airflow.module.airflow_db.helm_release.pg_db:
+resource "helm_release" "pg_db" {
+    [1m[0matomic[0m[0m                     = false
+    [1m[0mchart[0m[0m                      = ".terraform/modules/airflow.airflow_db/custom-chart"
+    [1m[0mcleanup_on_fail[0m[0m            = false
+    [1m[0mcreate_namespace[0m[0m           = false
+    [1m[0mdependency_update[0m[0m          = false
+    [1m[0mdisable_crd_hooks[0m[0m          = false
+    [1m[0mdisable_openapi_validation[0m[0m = false
+    [1m[0mdisable_webhooks[0m[0m           = true
+    [1m[0mforce_update[0m[0m               = false
+    [1m[0mid[0m[0m                         = "airflow-pg-db"
+    [1m[0mlint[0m[0m                       = false
+    [1m[0mmax_history[0m[0m                = 0
+    [1m[0mmetadata[0m[0m                   = [
+        {
+            app_version = "1.0.0"
+            chart       = "kubegres-cluster"
+            name        = "airflow-pg-db"
+            namespace   = "airflow"
+            revision    = 1
+            values      = jsonencode(
+                {
+                    backupSchedule    = "0 */24 * * *"
+                    configMapName     = "mypostgres-conf"
+                    customPGImage     = "postgres:14.4-alpine"
+                    db_name           = "airflow"
+                    db_password       = "airflow"
+                    db_user           = "user_airflow"
+                    enableBackup      = false
+                    log_statement     = "ddl"
+                    logging_collector = true
+                    max_connections   = 40
+                    pvc_bkp_name      = "pg-airflow-pvc-bkp"
+                    replicas          = 2
+                    size              = "2Gi"
+                    wal_level         = "logical"
+                }
+            )
+            version     = "0.0.7"
+        },
+    ]
+    [1m[0mname[0m[0m                       = "airflow-pg-db"
+    [1m[0mnamespace[0m[0m                  = "airflow"
+    [1m[0mpass_credentials[0m[0m           = false
+    [1m[0mrecreate_pods[0m[0m              = false
+    [1m[0mrender_subchart_notes[0m[0m      = true
+    [1m[0mreplace[0m[0m                    = false
+    [1m[0mreset_values[0m[0m               = false
+    [1m[0mreuse_values[0m[0m               = false
+    [1m[0mskip_crds[0m[0m                  = false
+    [1m[0mstatus[0m[0m                     = "deployed"
+    [1m[0mtimeout[0m[0m                    = 600
+    [1m[0mvalues[0m[0m                     = [
+        <<-EOT
+            size: 2Gi
+            configMapName: mypostgres-conf
+            enableBackup: false
+            backupSchedule: "0 */24 * * *"
+            customPGImage: "postgres:14.4-alpine"
+            pvc_bkp_name: pg-airflow-pvc-bkp 
+            replicas: 2
+            max_connections: 40
+            wal_level: "logical"
+            logging_collector: true
+            log_statement: 'ddl'
+            db_name: "airflow"
+            db_user: "user_airflow"
+            db_password: "airflow"
+        EOT,
+    ]
+    [1m[0mverify[0m[0m                     = false
+    [1m[0mversion[0m[0m                    = "0.0.7"
+    [1m[0mwait[0m[0m                       = true
+    [1m[0mwait_for_jobs[0m[0m              = false
+}
+
+# module.airflow.module.airflow_db.kubernetes_service.pg_external_replica_svc:
+resource "kubernetes_service" "pg_external_replica_svc" {
+    [1m[0mid[0m[0m                     = "airflow/pg-airflow-external-replica-nodeport"
+    [1m[0mstatus[0m[0m                 = [
+        {
+            load_balancer = [
+                {
+                    ingress = []
+                },
+            ]
+        },
+    ]
+    [1m[0mwait_for_load_balancer[0m[0m = true
+
+    metadata {
+        [1m[0mgeneration[0m[0m       = 0
+        [1m[0mname[0m[0m             = "pg-airflow-external-replica-nodeport"
+        [1m[0mnamespace[0m[0m        = "airflow"
+        [1m[0mresource_version[0m[0m = "30474767"
+        [1m[0muid[0m[0m              = "4c407903-5155-4b71-b6e4-f133c1c9aa73"
+    }
+
+    spec {
+        [1m[0mallocate_load_balancer_node_ports[0m[0m = true
+        [1m[0mcluster_ip[0m[0m                        = "10.43.223.83"
+        [1m[0mcluster_ips[0m[0m                       = [
+            "10.43.223.83",
+        ]
+        [1m[0mexternal_traffic_policy[0m[0m           = "Cluster"
+        [1m[0mhealth_check_node_port[0m[0m            = 0
+        [1m[0minternal_traffic_policy[0m[0m           = "Cluster"
+        [1m[0mip_families[0m[0m                       = [
+            "IPv4",
+        ]
+        [1m[0mip_family_policy[0m[0m                  = "SingleStack"
+        [1m[0mpublish_not_ready_addresses[0m[0m       = false
+        [1m[0mselector[0m[0m                          = {
+            "app"             = "airflow-pg-db"
+            "replicationRole" = "replica"
+        }
+        [1m[0msession_affinity[0m[0m                  = "None"
+        [1m[0mtype[0m[0m                              = "NodePort"
+
+        port {
+            [1m[0mnode_port[0m[0m   = 32665
+            [1m[0mport[0m[0m        = 5432
+            [1m[0mprotocol[0m[0m    = "TCP"
+            [1m[0mtarget_port[0m[0m = "5432"
+        }
+    }
+}
+
+# module.airflow.module.airflow_db.kubernetes_service.pg_external_svc:
+resource "kubernetes_service" "pg_external_svc" {
+    [1m[0mid[0m[0m                     = "airflow/pg-airflow-external-nodeport"
+    [1m[0mstatus[0m[0m                 = [
+        {
+            load_balancer = [
+                {
+                    ingress = []
+                },
+            ]
+        },
+    ]
+    [1m[0mwait_for_load_balancer[0m[0m = true
+
+    metadata {
+        [1m[0mgeneration[0m[0m       = 0
+        [1m[0mname[0m[0m             = "pg-airflow-external-nodeport"
+        [1m[0mnamespace[0m[0m        = "airflow"
+        [1m[0mresource_version[0m[0m = "30474769"
+        [1m[0muid[0m[0m              = "5ff9cbaf-df56-419b-9bd1-16e6c1cdef53"
+    }
+
+    spec {
+        [1m[0mallocate_load_balancer_node_ports[0m[0m = true
+        [1m[0mcluster_ip[0m[0m                        = "10.43.178.110"
+        [1m[0mcluster_ips[0m[0m                       = [
+            "10.43.178.110",
+        ]
+        [1m[0mexternal_traffic_policy[0m[0m           = "Cluster"
+        [1m[0mhealth_check_node_port[0m[0m            = 0
+        [1m[0minternal_traffic_policy[0m[0m           = "Cluster"
+        [1m[0mip_families[0m[0m                       = [
+            "IPv4",
+        ]
+        [1m[0mip_family_policy[0m[0m                  = "SingleStack"
+        [1m[0mpublish_not_ready_addresses[0m[0m       = false
+        [1m[0mselector[0m[0m                          = {
+            "app"             = "airflow-pg-db"
+            "replicationRole" = "primary"
+        }
+        [1m[0msession_affinity[0m[0m                  = "None"
+        [1m[0mtype[0m[0m                              = "NodePort"
+
+        port {
+            [1m[0mnode_port[0m[0m   = 30220
+            [1m[0mport[0m[0m        = 5432
+            [1m[0mprotocol[0m[0m    = "TCP"
+            [1m[0mtarget_port[0m[0m = "5432"
+        }
+    }
+}
+
+
+# module.metalb.helm_release.metallb:
+resource "helm_release" "metallb" {
+    [1m[0matomic[0m[0m                     = false
+    [1m[0mchart[0m[0m                      = "metallb"
+    [1m[0mcleanup_on_fail[0m[0m            = false
+    [1m[0mcreate_namespace[0m[0m           = false
+    [1m[0mdependency_update[0m[0m          = false
+    [1m[0mdisable_crd_hooks[0m[0m          = false
+    [1m[0mdisable_openapi_validation[0m[0m = false
+    [1m[0mdisable_webhooks[0m[0m           = true
+    [1m[0mforce_update[0m[0m               = false
+    [1m[0mid[0m[0m                         = "metallb-helm"
+    [1m[0mlint[0m[0m                       = false
+    [1m[0mmax_history[0m[0m                = 0
+    [1m[0mmetadata[0m[0m                   = [
+        {
+            app_version = "v0.13.5"
+            chart       = "metallb"
+            name        = "metallb-helm"
+            namespace   = "metallb"
+            revision    = 3
+            values      = jsonencode(
+                {
+                    speaker = {
+                        enabled   = true
+                        image     = {
+                            pullPolicy = [90mnull[0m[0m
+                            repository = "quay.io/metallb/speaker"
+                            tag        = [90mnull[0m[0m
+                        }
+                        resources = {
+                            limits = {
+                                cpu    = "100m"
+                                memory = "100Mi"
+                            }
+                        }
+                    }
+                }
+            )
+            version     = "0.13.5"
+        },
+    ]
+    [1m[0mname[0m[0m                       = "metallb-helm"
+    [1m[0mnamespace[0m[0m                  = "metallb"
+    [1m[0mpass_credentials[0m[0m           = false
+    [1m[0mrecreate_pods[0m[0m              = false
+    [1m[0mrender_subchart_notes[0m[0m      = true
+    [1m[0mreplace[0m[0m                    = false
+    [1m[0mrepository[0m[0m                 = "https://metallb.github.io/metallb"
+    [1m[0mreset_values[0m[0m               = false
+    [1m[0mreuse_values[0m[0m               = false
+    [1m[0mskip_crds[0m[0m                  = false
+    [1m[0mstatus[0m[0m                     = "deployed"
+    [1m[0mtimeout[0m[0m                    = 600
+    [1m[0mvalues[0m[0m                     = [
+        <<-EOT
+            speaker:
+              enabled: true
+              image:
+                repository: quay.io/metallb/speaker
+                tag:
+                pullPolicy:
+            
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 100Mi
+        EOT,
+    ]
+    [1m[0mverify[0m[0m                     = false
+    [1m[0mversion[0m[0m                    = "0.13.5"
+    [1m[0mwait[0m[0m                       = true
+    [1m[0mwait_for_jobs[0m[0m              = false
+}
+
+# module.metalb.kubectl_manifest.metallb-l2-announce:
+resource "kubectl_manifest" "metallb-l2-announce" {
+    [1m[0mapi_version[0m[0m             = "metallb.io/v1beta1"
+    [1m[0mapply_only[0m[0m              = false
+    [1m[0mforce_conflicts[0m[0m         = false
+    [1m[0mforce_new[0m[0m               = false
+    [1m[0mid[0m[0m                      = "/apis/metallb.io/v1beta1/namespaces/metallb/l2advertisements/metallb-announce"
+    [1m[0mkind[0m[0m                    = "L2Advertisement"
+    [1m[0mlive_manifest_incluster[0m[0m = (sensitive value)
+    [1m[0mlive_uid[0m[0m                = "7a3d319f-1d75-4238-bf2d-813e8b8a16d0"
+    [1m[0mname[0m[0m                    = "metallb-announce"
+    [1m[0mnamespace[0m[0m               = "metallb"
+    [1m[0mserver_side_apply[0m[0m       = true
+    [1m[0muid[0m[0m                     = "7a3d319f-1d75-4238-bf2d-813e8b8a16d0"
+    [1m[0mvalidate_schema[0m[0m         = true
+    [1m[0mwait[0m[0m                    = true
+    [1m[0mwait_for_rollout[0m[0m        = true
+    [1m[0myaml_body[0m[0m               = (sensitive value)
+    [1m[0myaml_body_parsed[0m[0m        = <<-EOT
+        apiVersion: metallb.io/v1beta1
+        kind: L2Advertisement
+        metadata:
+          name: metallb-announce
+          namespace: metallb
+        spec:
+          ipAddressPools:
+          - metallb-pool
+    EOT
+    [1m[0myaml_incluster[0m[0m          = (sensitive value)
+}
+
+# module.metalb.kubectl_manifest.metallb-pool:
+resource "kubectl_manifest" "metallb-pool" {
+    [1m[0mapi_version[0m[0m             = "metallb.io/v1beta1"
+    [1m[0mapply_only[0m[0m              = false
+    [1m[0mforce_conflicts[0m[0m         = false
+    [1m[0mforce_new[0m[0m               = false
+    [1m[0mid[0m[0m                      = "/apis/metallb.io/v1beta1/namespaces/metallb/ipaddresspools/metallb-pool"
+    [1m[0mkind[0m[0m                    = "IPAddressPool"
+    [1m[0mlive_manifest_incluster[0m[0m = (sensitive value)
+    [1m[0mlive_uid[0m[0m                = "f162da1b-0c92-4581-b47f-e539b1170e4f"
+    [1m[0mname[0m[0m                    = "metallb-pool"
+    [1m[0mnamespace[0m[0m               = "metallb"
+    [1m[0mserver_side_apply[0m[0m       = true
+    [1m[0muid[0m[0m                     = "f162da1b-0c92-4581-b47f-e539b1170e4f"
+    [1m[0mvalidate_schema[0m[0m         = true
+    [1m[0mwait[0m[0m                    = true
+    [1m[0mwait_for_rollout[0m[0m        = true
+    [1m[0myaml_body[0m[0m               = (sensitive value)
+    [1m[0myaml_body_parsed[0m[0m        = <<-EOT
+        apiVersion: metallb.io/v1beta1
+        kind: IPAddressPool
+        metadata:
+          name: metallb-pool
+          namespace: metallb
+        spec:
+          addresses:
+          - 192.168.15.160-192.168.15.170
+    EOT
+    [1m[0myaml_incluster[0m[0m          = (sensitive value)
+}
+
+# module.metalb.kubernetes_namespace.metallb:
+resource "kubernetes_namespace" "metallb" {
+    [1m[0mid[0m[0m = "metallb"
+
+    metadata {
+        [1m[0mannotations[0m[0m      = {}
+        [1m[0mgeneration[0m[0m       = 0
+        [1m[0mlabels[0m[0m           = {}
+        [1m[0mname[0m[0m             = "metallb"
+        [1m[0mresource_version[0m[0m = "10703282"
+        [1m[0muid[0m[0m              = "e6ae9fc8-3d82-41a4-9721-4ca06779a009"
+    }
+}
+
+
+# module.monitoring.helm_release.kube-prometheus-stack:
+resource "helm_release" "kube-prometheus-stack" {
+    [1m[0matomic[0m[0m                     = false
+    [1m[0mchart[0m[0m                      = "kube-prometheus-stack"
+    [1m[0mcleanup_on_fail[0m[0m            = false
+    [1m[0mcreate_namespace[0m[0m           = false
+    [1m[0mdependency_update[0m[0m          = false
+    [1m[0mdisable_crd_hooks[0m[0m          = false
+    [1m[0mdisable_openapi_validation[0m[0m = false
+    [1m[0mdisable_webhooks[0m[0m           = true
+    [1m[0mforce_update[0m[0m               = false
+    [1m[0mid[0m[0m                         = "monitoring"
+    [1m[0mlint[0m[0m                       = false
+    [1m[0mmax_history[0m[0m                = 0
+    [1m[0mmetadata[0m[0m                   = [
+        {
+            app_version = "0.59.2"
+            chart       = "kube-prometheus-stack"
+            name        = "monitoring"
+            namespace   = "monitoring"
+            revision    = 4
+            values      = jsonencode(
+                {
+                    grafana            = {
+                        adminPassword             = "prom-operator"
+                        defaultDashboardsEnabled  = true
+                        defaultDashboardsTimezone = "utc"
+                        enabled                   = true
+                        env                       = [90mnull[0m[0m
+                        forceDeployDashboards     = false
+                        forceDeployDatasources    = false
+                        "grafana.ini"             = {
+                            server = {
+                                domain   = "http://192.168.15.160"
+                                root_url = "http://192.168.15.160/grafana/"
+                            }
+                        }
+                        ingress                   = {
+                            annotations      = {
+                                "kubernetes.io/ingress.class" = "nginx"
+                            }
+                            enabled          = false
+                            hosts            = [
+                                "grafana.192.168.15.160.nip.io",
+                            ]
+                            ingressClassName = "nginx"
+                            labels           = {}
+                            path             = "/grafana/"
+                            pathType         = "ImplementationSpecific"
+                            tls              = []
+                        }
+                        namespaceOverride         = ""
+                        rbac                      = {
+                            pspEnabled = false
+                        }
+                        sidecar                   = {
+                            dashboards  = {
+                                annotations  = {}
+                                enabled      = true
+                                label        = "grafana_dashboard"
+                                labelValue   = "1"
+                                multicluster = {
+                                    etcd   = {
+                                        enabled = false
+                                    }
+                                    global = {
+                                        enabled = false
+                                    }
+                                }
+                                provider     = {
+                                    allowUiUpdates = false
+                                }
+                            }
+                            datasources = {
+                                annotations                         = {}
+                                createPrometheusReplicasDatasources = false
+                                defaultDatasourceEnabled            = true
+                                enabled                             = true
+                                exemplarTraceIdDestinations         = {}
+                                label                               = "grafana_datasource"
+                                labelValue                          = "1"
+                                uid                                 = "prometheus"
+                            }
+                        }
+                    }
+                    prometheus         = {
+                        additionalPodMonitors = [
+                            {
+                                additionalLabels    = {
+                                    app = "strimzi"
+                                }
+                                name                = "cluster-operator-metrics"
+                                namespaceSelector   = {
+                                    matchNames = [
+                                        "kafka",
+                                    ]
+                                }
+                                podMetricsEndpoints = [
+                                    {
+                                        path = "/metrics"
+                                        port = "http"
+                                    },
+                                ]
+                                selector            = {
+                                    matchLabels = {
+                                        "strimzi.io/kind" = "cluster-operator"
+                                    }
+                                }
+                            },
+                            {
+                                additionalLabels    = {
+                                    app = "strimzi"
+                                }
+                                name                = "entity-operator-metrics"
+                                namespaceSelector   = {
+                                    matchNames = [
+                                        "kafka",
+                                    ]
+                                }
+                                podMetricsEndpoints = [
+                                    {
+                                        path = "/metrics"
+                                        port = "healthcheck"
+                                    },
+                                ]
+                                selector            = {
+                                    matchLabels = {
+                                        "app.kubernetes.io/name" = "entity-operator"
+                                    }
+                                }
+                            },
+                            {
+                                additionalLabels    = {
+                                    app = "strimzi"
+                                }
+                                name                = "bridge-metrics"
+                                namespaceSelector   = {
+                                    matchNames = [
+                                        "kafka",
+                                    ]
+                                }
+                                podMetricsEndpoints = [
+                                    {
+                                        path = "/metrics"
+                                        port = "rest-api"
+                                    },
+                                ]
+                                selector            = {
+                                    matchLabels = {
+                                        "strimzi.io/kind" = "KafkaBridge"
+                                    }
+                                }
+                            },
+                            {
+                                additionalLabels    = {
+                                    app = "strimzi"
+                                }
+                                name                = "kafka-resources-metrics"
+                                namespaceSelector   = {
+                                    matchNames = [
+                                        "kafka",
+                                    ]
+                                }
+                                podMetricsEndpoints = [
+                                    {
+                                        path        = "/metrics"
+                                        port        = "tcp-prometheus"
+                                        relabelings = [
+                                            {
+                                                action      = "labelmap"
+                                                regex       = "__meta_kubernetes_pod_label_(strimzi_io_.+)"
+                                                replacement = "$1"
+                                                separator   = ";"
+                                            },
+                                            {
+                                                action       = "replace"
+                                                regex        = "(.*)"
+                                                replacement  = "$1"
+                                                separator    = ";"
+                                                sourceLabels = [
+                                                    "__meta_kubernetes_namespace",
+                                                ]
+                                                targetLabel  = "namespace"
+                                            },
+                                            {
+                                                action       = "replace"
+                                                regex        = "(.*)"
+                                                replacement  = "$1"
+                                                separator    = ";"
+                                                sourceLabels = [
+                                                    "__meta_kubernetes_pod_name",
+                                                ]
+                                                targetLabel  = "kubernetes_pod_name"
+                                            },
+                                            {
+                                                action       = "replace"
+                                                regex        = "(.*)"
+                                                replacement  = "$1"
+                                                separator    = ";"
+                                                sourceLabels = [
+                                                    "__meta_kubernetes_pod_node_name",
+                                                ]
+                                                targetLabel  = "node_name"
+                                            },
+                                            {
+                                                action       = "replace"
+                                                regex        = "(.*)"
+                                                replacement  = "$1"
+                                                separator    = ";"
+                                                sourceLabels = [
+                                                    "__meta_kubernetes_pod_host_ip",
+                                                ]
+                                                targetLabel  = "node_ip"
+                                            },
+                                        ]
+                                    },
+                                ]
+                                selector            = {
+                                    matchExpressions = [
+                                        {
+                                            key      = "strimzi.io/kind"
+                                            operator = "In"
+                                            values   = [
+                                                "Kafka",
+                                                "KafkaConnect",
+                                                "KafkaMirrorMaker",
+                                                "KafkaMirrorMaker2",
+                                            ]
+                                        },
+                                    ]
+                                }
+                            },
+                        ]
+                        emabled               = true
+                        prometheusSpec        = {
+                            podMonitorSelector = {
+                                matchLabels = {
+                                    app = "strimzi"
+                                }
+                            }
+                        }
+                    }
+                    prometheusOperator = {
+                        admissionWebhooks = {
+                            enabled = false
+                        }
+                        enabled           = true
+                        resources         = {
+                            limits   = {
+                                cpu    = "300m"
+                                memory = "200Mi"
+                            }
+                            requests = {
+                                cpu    = "200m"
+                                memory = "100Mi"
+                            }
+                        }
+                        tls               = {
+                            enabled = false
+                        }
+                    }
+                }
+            )
+            version     = "40.3.0"
+        },
+    ]
+    [1m[0mname[0m[0m                       = "monitoring"
+    [1m[0mnamespace[0m[0m                  = "monitoring"
+    [1m[0mpass_credentials[0m[0m           = false
+    [1m[0mrecreate_pods[0m[0m              = false
+    [1m[0mrender_subchart_notes[0m[0m      = true
+    [1m[0mreplace[0m[0m                    = false
+    [1m[0mrepository[0m[0m                 = "https://prometheus-community.github.io/helm-charts"
+    [1m[0mreset_values[0m[0m               = false
+    [1m[0mreuse_values[0m[0m               = false
+    [1m[0mskip_crds[0m[0m                  = false
+    [1m[0mstatus[0m[0m                     = "deployed"
+    [1m[0mtimeout[0m[0m                    = 300
+    [1m[0mvalues[0m[0m                     = [
+        <<-EOT
+            prometheusOperator:
+              enabled: true
+              admissionWebhooks:
+                enabled: false
+              tls:
+                enabled: false
+              resources:
+                limits:
+                  cpu: 300m
+                  memory: 200Mi
+                requests:
+                  cpu: 200m
+                  memory: 100Mi
+              # prometheusSpec:
+              #   podMonitorSelectorNilUsesHelmValues: false
+              #   probeSelectorNilUsesHelmValues: false
+              #   ruleSelectorNilUsesHelmValues: false
+              #   serviceMonitorSelectorNilUsesHelmValues: false
+              #   ## Example which selects PodMonitors with label "prometheus" set to "somelabel"
+                # podMonitorSelector:
+                #    matchLabels:
+                #     app: strimzi
+            
+            
+            prometheus:
+              emabled: true
+              prometheusSpec:
+                podMonitorSelector:
+                  matchLabels:
+                    app: strimzi
+            
+              additionalPodMonitors:
+              ## Name of the PodMonitor to create
+              - name: "cluster-operator-metrics"
+                additionalLabels:
+                  app: strimzi
+                selector:
+                  matchLabels:
+                    strimzi.io/kind: cluster-operator
+                namespaceSelector:
+                  matchNames:
+                    - kafka
+                podMetricsEndpoints:
+                - path: /metrics
+                  port: http
+              - name: "entity-operator-metrics"
+                additionalLabels:
+                  app: strimzi
+                selector:
+                  matchLabels:
+                    app.kubernetes.io/name: entity-operator
+                namespaceSelector:
+                  matchNames:
+                    - kafka
+                podMetricsEndpoints:
+                - path: /metrics
+                  port: healthcheck
+              - name: "bridge-metrics"
+                additionalLabels:
+                  app: strimzi
+                selector:
+                  matchLabels:
+                    strimzi.io/kind: KafkaBridge
+                namespaceSelector:
+                  matchNames:
+                    - kafka
+                podMetricsEndpoints:
+                - path: /metrics
+                  port: rest-api
+              - name: "kafka-resources-metrics"
+                additionalLabels:
+                  app: strimzi
+                selector:
+                  matchExpressions:
+                    - key: "strimzi.io/kind"
+                      operator: In
+                      values: ["Kafka", "KafkaConnect", "KafkaMirrorMaker", "KafkaMirrorMaker2"]
+                namespaceSelector:
+                  matchNames:
+                    - kafka
+                podMetricsEndpoints:
+                - path: /metrics
+                  port: tcp-prometheus
+                  relabelings:
+                  - separator: ;
+                    regex: __meta_kubernetes_pod_label_(strimzi_io_.+)
+                    replacement: $1
+                    action: labelmap
+                  - sourceLabels: [__meta_kubernetes_namespace]
+                    separator: ;
+                    regex: (.*)
+                    targetLabel: namespace
+                    replacement: $1
+                    action: replace
+                  - sourceLabels: [__meta_kubernetes_pod_name]
+                    separator: ;
+                    regex: (.*)
+                    targetLabel: kubernetes_pod_name
+                    replacement: $1
+                    action: replace
+                  - sourceLabels: [__meta_kubernetes_pod_node_name]
+                    separator: ;
+                    regex: (.*)
+                    targetLabel: node_name
+                    replacement: $1
+                    action: replace
+                  - sourceLabels: [__meta_kubernetes_pod_host_ip]
+                    separator: ;
+                    regex: (.*)
+                    targetLabel: node_ip
+                    replacement: $1
+                    action: replace
+            
+            grafana:
+              enabled: true
+              namespaceOverride: ""
+              env:
+                # GF_SERVER_ROOT_URL: http://192.168.15.160/grafana
+                # GF_SERVER_SERVE_FROM_SUB_PATH: 'true'
+              grafana.ini:
+                server:
+                  domain: http://192.168.15.160
+                  root_url: http://192.168.15.160/grafana/
+                  # serve_from_sub_path: true
+              ## Image and version of grafana. If not provided (left commented out) default values from grafana charts will be used.
+              ##
+              # image:
+              #   repository: docker.io/grafana/grafana
+              #   tag: 9.0.6
+              #   sha: ""
+              #   pullPolicy: IfNotPresent
+            
+              ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
+              ##
+              forceDeployDatasources: false
+            
+              ## ForceDeployDashboard Create dashboard configmap even if grafana deployment has been disabled
+              ##
+              forceDeployDashboards: false
+            
+              ## Deploy default dashboards
+              ##
+              defaultDashboardsEnabled: true
+            
+              ## Timezone for the default dashboards
+              ## Other options are: browser or a specific timezone, i.e. Europe/Luxembourg
+              ##
+              defaultDashboardsTimezone: utc
+            
+              adminPassword: prom-operator
+            
+              rbac:
+                ## If true, Grafana PSPs will be created
+                ##
+                pspEnabled: false
+            
+              ingress:
+                ## If true, Grafana Ingress will be created
+                ##
+                enabled: false
+            
+                ## IngressClassName for Grafana Ingress.
+                ## Should be provided if Ingress is enable.
+                ##
+                ingressClassName: nginx
+            
+                ## Annotations for Grafana Ingress
+                ##
+                annotations:
+                  kubernetes.io/ingress.class: nginx
+                  # kubernetes.io/tls-acme: "true"
+            
+                ## Labels to be added to the Ingress
+                ##
+                labels: {}
+            
+                ## Hostnames.
+                ## Must be provided if Ingress is enable.
+                ##
+                # hosts:
+                #   - grafana.domain.com
+                hosts:
+                  - grafana.192.168.15.160.nip.io
+            
+                ## Path for grafana ingress
+                path: /grafana/
+                pathType: ImplementationSpecific
+            
+                ## TLS configuration for grafana Ingress
+                ## Secret must be manually created in the namespace
+                ##
+                tls: []
+                # - secretName: grafana-general-tls
+                #   hosts:
+                #   - grafana.example.com
+            
+              sidecar:
+                ## Image and version of sidecar. If not provided (left commented out) default values from grafana charts will be used.
+                ##
+                # image:
+                #   repository: quay.io/kiwigrid/k8s-sidecar
+                #   tag: 1.19.2
+                #   sha: ""
+            
+                dashboards:
+                  enabled: true
+                  label: grafana_dashboard
+                  labelValue: "1"
+            
+                  ## Annotations for Grafana dashboard configmaps
+                  ##
+                  annotations: {}
+                  multicluster:
+                    global:
+                      enabled: false
+                    etcd:
+                      enabled: false
+                  provider:
+                    allowUiUpdates: false
+                datasources:
+                  enabled: true
+                  defaultDatasourceEnabled: true
+            
+                  uid: prometheus
+            
+                  ## URL of prometheus datasource
+                  ##
+                  # url: http://prometheus-stack-prometheus:9090/
+            
+                  # If not defined, will use prometheus.prometheusSpec.scrapeInterval or its default
+                  # defaultDatasourceScrapeInterval: 15s
+            
+                  ## Annotations for Grafana datasource configmaps
+                  ##
+                  annotations: {}
+            
+                  ## Create datasource for each Pod of Prometheus StatefulSet;
+                  ## this uses headless service `prometheus-operated` which is
+                  ## created by Prometheus Operator
+                  ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/0fee93e12dc7c2ea1218f19ae25ec6b893460590/pkg/prometheus/statefulset.go#L255-L286
+                  createPrometheusReplicasDatasources: false
+                  label: grafana_datasource
+                  labelValue: "1"
+            
+                  ## Field with internal link pointing to existing data source in Grafana.
+                  ## Can be provisioned via additionalDataSources
+                  exemplarTraceIdDestinations: {}
+                    # datasourceUid: Jaeger
+                    # traceIdLabelName: trace_id
+        EOT,
+    ]
+    [1m[0mverify[0m[0m                     = false
+    [1m[0mversion[0m[0m                    = "40.3.0"
+    [1m[0mwait[0m[0m                       = true
+    [1m[0mwait_for_jobs[0m[0m              = false
+}
+
+# module.monitoring.kubernetes_ingress_v1.ingress-grafana:
+resource "kubernetes_ingress_v1" "ingress-grafana" {
+    [1m[0mid[0m[0m     = "monitoring/grafana-web"
+    [1m[0mstatus[0m[0m = [
+        {
+            load_balancer = [
+                {
+                    ingress = [
+                        {
+                            hostname = ""
+                            ip       = "192.168.15.160"
+                        },
+                    ]
+                },
+            ]
+        },
+    ]
+
+    metadata {
+        [1m[0mannotations[0m[0m      = {
+            "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+            "nginx.ingress.kubernetes.io/rewrite-target"     = "/$2"
+        }
+        [1m[0mgeneration[0m[0m       = 1
+        [1m[0mlabels[0m[0m           = {
+            "app" = "grafana"
+        }
+        [1m[0mname[0m[0m             = "grafana-web"
+        [1m[0mnamespace[0m[0m        = "monitoring"
+        [1m[0mresource_version[0m[0m = "28561979"
+        [1m[0muid[0m[0m              = "bb2000f8-b54e-409b-b9d9-0dd2d77cb3b8"
+    }
+
+    spec {
+        [1m[0mingress_class_name[0m[0m = "nginx"
+
+        rule {
+            http {
+                path {
+                    [1m[0mpath[0m[0m      = "/grafana(/|$)(.*)"
+                    [1m[0mpath_type[0m[0m = "ImplementationSpecific"
+
+                    backend {
+
+                        service {
+                            [1m[0mname[0m[0m = "monitoring-grafana"
+
+                            port {
+                                [1m[0mnumber[0m[0m = 80
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+# module.monitoring.kubernetes_namespace.monitoring:
+resource "kubernetes_namespace" "monitoring" {
+    [1m[0mid[0m[0m = "monitoring"
+
+    metadata {
+        [1m[0mannotations[0m[0m      = {}
+        [1m[0mgeneration[0m[0m       = 0
+        [1m[0mlabels[0m[0m           = {}
+        [1m[0mname[0m[0m             = "monitoring"
+        [1m[0mresource_version[0m[0m = "10846749"
+        [1m[0muid[0m[0m              = "cf577956-fb06-46d4-b5a0-1a0e14669795"
+    }
+}[0m[0m

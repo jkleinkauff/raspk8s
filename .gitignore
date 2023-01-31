@@ -12,3 +12,5 @@ delta-lake/.env
 delta-lake/*
 terraform/kafka-helm/values.yaml
 terraform/kafka-helm/values copy.yaml
+terraform/modules/airflow/secrets.tf
+terraform/modules/airflow-helm/secrets.tf

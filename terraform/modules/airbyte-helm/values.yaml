@@ -37,10 +37,10 @@ global:
     resources:
       requests:
         cpu: 800m
-        memory: 2Gi
+        memory: 2.2Gi
       limits:
-        cpu: 1000m
-        memory: 2Gi
+        cpu: 800m
+        memory: 2.2Gi
 
 ## Pods Service Account
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
@@ -61,16 +61,18 @@ server:
       value: "***REMOVED***"
     - name: AWS_SECRET_ACCESS_KEY
       value: "+***REMOVED***"
+    - name: BASIC_AUTH_USERNAME
+      value: "jhonatas"
+    - name: BASIC_AUTH_PASSWORD
+      value: "kleinkauff"
   service:
     type: ClusterIP
     port: 8001
   resources:
     requests:
-      cpu: 400m
-      memory: 400Mi
+      memory: 600Mi
     limits:
-      cpu: 800m
-      memory: 1Gi
+      memory: 600Mi
 
 worker:
   image:
@@ -83,15 +85,19 @@ worker:
       value: "***REMOVED***"
     - name: AWS_SECRET_ACCESS_KEY
       value: "+***REMOVED***"
+    - name: BASIC_AUTH_USERNAME
+      value: "jhonatas"
+    - name: BASIC_AUTH_PASSWORD
+      value: "kleinkauff"
   hpa:
     enabled: false
   resources:
     requests:
-      cpu: 500m
-      memory: 2Gi
+      cpu: 300m
+      memory: 550Mi
     limits:
-      cpu: 2000m
-      memory: 2Gi
+      cpu: 1000m
+      memory: 550Mi
 
 webapp:
   enabled: true
@@ -119,11 +125,35 @@ webapp:
     #   - chart-example.local
   api:
     url: /api/v1/
+  resources:
+    requests:
+      memory: 40Mi
+    limits:
+      memory: 40Mi
+  extraEnv:
+    - name: BASIC_AUTH_USERNAME
+      value: "jhonatas"
+    - name: BASIC_AUTH_PASSWORD
+      value: "kleinkauff"
+  # extraVolumes:
+  #   - name: basic-auth
+  #     secret:
+  #       secretName: basic-auth
+  #   - name: default-conf-nginx
+  #     configMap:
+  #       name: default-conf-nginx
+  # extraVolumeMounts:
+  #   - name: basic-auth
+  #     mountPath: /etc/nginx/nginx-auth.conf
+  #     readOnly: true
+  #   - name: default-conf-nginx
+  #     mountPath: /etc/nginx/nginx.conf
+
 
 pod-sweeper:
-  enabled: false
+  enabled: true
   image:
-    repository: bitnami/kubectl
+    repository: portainer/kubectl-shell
     pullPolicy: IfNotPresent
     tag: latest
 
@@ -141,7 +171,6 @@ cron:
 
 airbyte-bootloader:
   enabled: true
-
 
 postgresql:
   enabled: false

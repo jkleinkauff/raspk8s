@@ -115,10 +115,11 @@ web:
   ## resource requests/limits for the web Pods
   ## [SPEC] https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#resourcerequirements-v1-core
   resources:
-    limits:
-      memory: 1Gi
     requests:
-      memory: 1Gi
+      memory: 900M
+    limits:
+      memory: 900M
+
 
   ## configs for the Service of the web Pods
   service:
@@ -286,7 +287,7 @@ dags:
     httpSecretPasswordKey: password
     ## the name of a pre-created Secret with git ssh credentials
     ##
-    sshSecret: "airflow-secrets"
+    sshSecret: "airflow-ssh-secrets"
     ## the key in `dags.gitSync.sshSecret` with your ssh-key file
     ##
     sshSecretKey: id_rsa
@@ -371,7 +372,7 @@ postgresql:
   persistence:
     enabled: true
     storageClass: ""
-    size: 8Gi
+    size: 6Gi
 
 ###################################
 ## DATABASE | External Database
@@ -380,21 +381,21 @@ postgresql:
 externalDatabase:
   type: postgres
 
-  host: pg-airflow.airflow
+  host: ${db_host}
   port: 5432
 
   ## the schema which will contain the airflow tables
-  database: airflow
+  database: ${db_name}
 
   ## (username - option 1) a plain-text helm value
-  user: user_airflow
+  user: ${db_user}
 
   ## (username - option 2) a Kubernetes secret in your airflow namespace
   #userSecret: "airflow-cluster1-database-credentials"
   #userSecretKey: "username"
 
   ## (password - option 1) a plain-text helm value
-  password: airflow
+  password: ${db_password}
 
   ## (password - option 2) a Kubernetes secret in your airflow namespace
   #passwordSecret: "airflow-cluster1-database-credentials"
