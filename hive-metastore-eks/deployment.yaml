@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hive-metastore-deployment
+  namespace: hmsdb
+  labels:
+    component: hive-metastore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: hive-metastore
+  template:
+    metadata:
+      labels:
+        component: hive-metastore
+    spec:
+      containers:
+      - name: hive-metastore-container
+        image: kleinkauff/hive-metastore-eks
+        imagePullPolicy: Always
+        env:
+        - name: METASTORE_TYPE
+          value: "postgres"
+        - name: METASTORE_DB_HOSTNAME
+          value: "hmsdb-pg-db.hmsdb"
+        ports:
+        - containerPort: 9083
+        # command:
+        #   - /bin/sh
+        #   - entrypoint.sh

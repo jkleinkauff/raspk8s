@@ -1,15 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations: 
-    kubernetes.io/ingress.class: nginx
-    # nginx.ingress.kubernetes.io/rewrite-target: /$1
+  annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+  creationTimestamp: "2022-09-30T14:53:49Z"
+  generation: 1
   labels:
     app: grafana
   name: grafana-web
   namespace: monitoring
+  resourceVersion: "28561979"
+  uid: bb2000f8-b54e-409b-b9d9-0dd2d77cb3b8
 spec:
   ingressClassName: nginx
   rules:
@@ -20,7 +22,6 @@ spec:
             name: monitoring-grafana
             port:
               number: 80
-        # path: /grafana/
         path: /grafana(/|$)(.*)
         pathType: ImplementationSpecific
 status:

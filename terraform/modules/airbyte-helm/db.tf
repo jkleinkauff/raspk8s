@@ -3,7 +3,7 @@ module "airbyte_db" {
   source = "github.com/jkleinkauff/bare_metal_infra/db/kubegress"
 
   name            = "airbyte"
-  namespace       = kubernetes_namespace.airflow_ns.airbyte.0.name
+  namespace       = kubernetes_namespace.airbyte.metadata.0.name
   size            = "2Gi"
   replicas        = 2
   enable_backup   = false
@@ -11,5 +11,5 @@ module "airbyte_db" {
   db_name         = "airbyte"
   db_user         = "user_airbyte"
   db_password     = "airbyte"
-  max_connections = 100
+  max_connections = 105
 }

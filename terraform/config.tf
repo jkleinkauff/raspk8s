@@ -40,3 +40,5 @@ provider "kubectl" {
   # token                  = data.aws_eks_cluster_auth.main.token
   # load_config_file       = false
 }
+
+data "aws_caller_identity" "current" {}

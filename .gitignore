@@ -14,3 +14,19 @@ terraform/kafka-helm/values.yaml
 terraform/kafka-helm/values copy.yaml
 terraform/modules/airflow/secrets.tf
 terraform/modules/airflow-helm/secrets.tf
+ca.crt
+hive-metastore-eks/config/coordinator/etc/config.properties
+hive-metastore-eks/config/coordinator/etc/jvm.config
+hive-metastore-eks/config/coordinator/etc/log.properties
+hive-metastore-eks/config/coordinator/etc/node.properties
+hive-metastore-eks/config/coordinator/etc/catalog/bronze.properties
+hive-metastore-eks/config/coordinator/etc/catalog/iceberg.properties
+hive-metastore-eks/config/coordinator/etc/catalog/s3.properties
+hive-metastore-eks/config/coordinator/etc/catalog_bkp/glue.properties
+hive-metastore-eks/config/coordinator/etc/catalog_bkp/minio.properties
+hive-metastore-eks/config/coordinator/etc/catalog_bkp/s3.properties
+hive-metastore-eks/config/coordinator/etc/catalog_bkp/tpcds.properties
+hive-metastore-eks/config/coordinator/etc/catalog_bkp/tpch.properties
+hive-metastore-eks/config/metastore/conf/metastore-site.xml
+terraform/.terraform.lock.hcl
+terraform/.terraform.lock.hcl

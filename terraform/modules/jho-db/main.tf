@@ -18,4 +18,7 @@ module "jhodb" {
   db_user         = "user_jhodb"
   db_password     = "jhodb"
   max_connections = 40
+
+  create_airbyte_connection = false
+  airbyte_workspace_id      = "54e22b36-72af-49aa-9904-1d8a86a98b29"
 }
