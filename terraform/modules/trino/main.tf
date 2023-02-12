@@ -4,7 +4,7 @@ resource "kubernetes_namespace" "trino" {
   }
 }
 
-resource "helm_release" "airbyte" {
+resource "helm_release" "trino" {
   name = "trino"
 
   repository = "https://trinodb.github.io/charts/"
